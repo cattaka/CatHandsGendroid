@@ -58,7 +58,7 @@ public class FullModelTest {
         }
         {// compare
             FullModel t = FullModelHandler.findByKey(db, model.getKey());
-            MoreAsserts.assertEquals(model.getBlobValue(), t.getBlobValue());
+            assertEqualsArray(model.getBlobValue(), t.getBlobValue());
             assertEquals(model.getBooleanValue(), t.getBooleanValue());
             assertEquals(model.getByteValue(), t.getByteValue());
             assertEquals(model.getCharacterValue(), t.getCharacterValue());
@@ -146,7 +146,7 @@ public class FullModelTest {
         }
         {// compare
             FullModel t = FullModelHandler.findByKey(db, model.getKey());
-            MoreAsserts.assertEquals(model2.getBlobValue(), t.getBlobValue());
+            assertEqualsArray(model2.getBlobValue(), t.getBlobValue());
             assertEquals(model2.getBooleanValue(), t.getBooleanValue());
             assertEquals(model2.getByteValue(), t.getByteValue());
             assertEquals(model2.getCharacterValue(), t.getCharacterValue());
@@ -248,20 +248,15 @@ public class FullModelTest {
             model.setTinyEnum(TinyEnum.A);
         }
 
-        byte[] bs;
+        Parcel parcel;
         {
-            Parcel parcel = Robolectric.newInstanceOf(Parcel.class);
+            parcel = Robolectric.newInstanceOf(Parcel.class);
             parcel.writeParcelable(model, 0);
-            bs = parcel.marshall();
-            parcel.recycle();
         }
         {
-            Parcel parcel = Robolectric.newInstanceOf(Parcel.class);
-            parcel.unmarshall(bs, 0, bs.length);
-            parcel.setDataPosition(0);
             FullModel t = parcel.readParcelable(this.getClass().getClassLoader());
             parcel.recycle();
-            MoreAsserts.assertEquals(model.getBlobValue(), t.getBlobValue());
+            assertEqualsArray(model.getBlobValue(), t.getBlobValue());
             assertEquals(model.getBooleanValue(), t.getBooleanValue());
             assertEquals(model.getByteValue(), t.getByteValue());
             assertEquals(model.getCharacterValue(), t.getCharacterValue());
@@ -292,16 +287,12 @@ public class FullModelTest {
     public void testParcelFunc_null() {
         FullModel model = new FullModel();
 
-        byte[] bs;
+        Parcel parcel;
         {
-            Parcel parcel = ShadowParcel.obtain();
+            parcel = ShadowParcel.obtain();
             parcel.writeParcelable(model, 0);
-            bs = parcel.marshall();
-            parcel.recycle();
         }
         {
-            Parcel parcel = Robolectric.newInstanceOf(Parcel.class);
-            parcel.unmarshall(bs, 0, bs.length);
             parcel.setDataPosition(0);
             FullModel t = parcel.readParcelable(this.getClass().getClassLoader());
             parcel.recycle();
@@ -329,5 +320,32 @@ public class FullModelTest {
             assertEquals(model.getStringValue(), t.getStringValue());
             assertEquals(model.getTinyEnum(), t.getTinyEnum());
         }
+    }
+    private void assertEqualsArray(byte[] b1, byte[] b2) {
+    	if (b1 == b2) {
+    		// ok
+    	} else if (b1 != null) {
+    		if (b2 != null) {
+    			if (b1.length == b2.length) {
+    				for (int i=0;i<b1.length;i++) {
+    					if (b1[i] == b2[i]) {
+    						// ok
+    					} else {
+    	        	    	fail();
+    					}
+    				}
+    			} else {
+        	    	fail();
+    			}
+    		} else {
+    	    	fail();
+    		}
+    	} else {
+    		if (b2 != null) {
+    	    	fail();
+    		} else {
+    			// ok
+    		}
+    	}
     }
 }
