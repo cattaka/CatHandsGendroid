@@ -52,7 +52,7 @@
 						</goals>
 						<configuration>
 							<annotationProcessors>
-								<annotationProcessor>net.cattaka.util.gendbhandler.apt.GenDbHandlerAnnotationProcessor</annotationProcessor>
+								<annotationProcessor>net.cattaka.util.cathandsgendroid.apt.CatHandsGendroidProcessor</annotationProcessor>
 							</annotationProcessors>
 						</configuration>
 					</execution>
