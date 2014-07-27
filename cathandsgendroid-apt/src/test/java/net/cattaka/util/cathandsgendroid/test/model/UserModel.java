@@ -4,13 +4,11 @@ package net.cattaka.util.cathandsgendroid.test.model;
 import java.util.Date;
 import java.util.List;
 
-import net.cattaka.util.cathandsgendroid.Attribute;
-import net.cattaka.util.cathandsgendroid.GenDbHandler;
-import net.cattaka.util.cathandsgendroid.Attribute.FieldType;
-import net.cattaka.util.cathandsgendroid.test.model.coder.AuthorityCoder;
-import net.cattaka.util.cathandsgendroid.test.model.coder.StringArrayCoder;
+import net.cattaka.util.cathandsgendroid.accessor.EnumOrderAccessor;
+import net.cattaka.util.cathandsgendroid.annotation.DataModel;
+import net.cattaka.util.cathandsgendroid.annotation.DataModelAttrs;
 
-@GenDbHandler(find = {
+@DataModel(find = {
         "id", "username", "team:role+,id", "team:id-", ":id", "authority:id+"
 }, unique = {
     "username"
@@ -24,28 +22,27 @@ public class UserModel {
         USER, ADMIN
     }
 
-    @Attribute(primaryKey = true)
+    @DataModelAttrs(primaryKey = true)
     private Long id;
 
     private String username;
 
-    @Attribute(version = 2)
+    @DataModelAttrs(version = 2)
     private String nickname;
 
-    @Attribute(version = 2)
+    @DataModelAttrs(version = 2)
     private String team;
 
     private Role role;
 
     private Date createdAt;
 
-    @Attribute(customCoder = StringArrayCoder.class, customDataType = FieldType.BLOB)
     private List<String> tags;
 
-    @Attribute(version = 3, customDataType = FieldType.INTEGER, customCoder = AuthorityCoder.class)
+    @DataModelAttrs(version = 3, accessor = EnumOrderAccessor.class)
     private Authority authority;
 
-    @Attribute(persistent = false)
+    @DataModelAttrs(ignore = true)
     private Object userData;
 
     private byte[] blob;

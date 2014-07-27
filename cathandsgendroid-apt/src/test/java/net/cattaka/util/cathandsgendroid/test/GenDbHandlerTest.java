@@ -12,7 +12,7 @@ import java.util.List;
 import net.cattaka.util.cathandsgendroid.test.model.UserModel;
 import net.cattaka.util.cathandsgendroid.test.model.UserModel.Authority;
 import net.cattaka.util.cathandsgendroid.test.model.UserModel.Role;
-import net.cattaka.util.cathandsgendroid.test.model.handler.UserModelHandler;
+import net.cattaka.util.cathandsgendroid.test.model.UserModelCatHands;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,7 @@ public class GenDbHandlerTest {
     @Test
     public void testDml() {
         SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
-        db.execSQL(UserModelHandler.SQL_CREATE_TABLE);
+        db.execSQL(UserModelCatHands.SQL_CREATE_TABLE);
         { // Insert
             UserModel model;
             { // create model
@@ -39,8 +39,8 @@ public class GenDbHandlerTest {
                                 1, 2
                         }, true, (byte)120, 'C');
             }
-            UserModelHandler.insert(db, model);
-            UserModel model2 = UserModelHandler.findByUsername(db, "taro");
+            UserModelCatHands.insert(db, model);
+            UserModel model2 = UserModelCatHands.findByUsername(db, "taro");
             assertEquals(model.getId(), model2.getId());
             assertEquals(model.getUsername(), model2.getUsername());
             assertEquals(model.getTeam(), model2.getTeam());
@@ -58,7 +58,7 @@ public class GenDbHandlerTest {
             assertEquals('C', model2.getCharData().charValue());
         }
         { // Update
-            UserModel model = UserModelHandler.findByUsername(db, "taro");
+            UserModel model = UserModelCatHands.findByUsername(db, "taro");
             { // update model
                 List<String> tags = new ArrayList<String>();
                 tags.add("Java");
@@ -75,9 +75,9 @@ public class GenDbHandlerTest {
                 model.setByteData((byte)111);
                 model.setCharData('D');
             }
-            long n = UserModelHandler.update(db, model);
+            long n = UserModelCatHands.update(db, model);
             assertEquals(1L, n);
-            UserModel model2 = UserModelHandler.findByUsername(db, "taro2");
+            UserModel model2 = UserModelCatHands.findByUsername(db, "taro2");
             assertEquals(model.getId(), model2.getId());
             assertEquals(model.getUsername(), model2.getUsername());
             assertEquals(model.getTeam(), model2.getTeam());
@@ -92,9 +92,9 @@ public class GenDbHandlerTest {
             assertEquals('D', model2.getCharData().charValue());
         }
         { // delete
-            UserModel model = UserModelHandler.findByUsername(db, "taro2");
-            UserModelHandler.delete(db, model.getId());
-            UserModel model2 = UserModelHandler.findByUsername(db, "taro2");
+            UserModel model = UserModelCatHands.findByUsername(db, "taro2");
+            UserModelCatHands.delete(db, model.getId());
+            UserModel model2 = UserModelCatHands.findByUsername(db, "taro2");
             assertNull(model2);
         }
 
@@ -104,37 +104,38 @@ public class GenDbHandlerTest {
     @Test
     public void testFind() {
         SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
-        db.execSQL(UserModelHandler.SQL_CREATE_TABLE);
-        UserModelHandler.insert(db, new UserModel(null, "taro", "Taro Yamada", "A",
+        db.execSQL(UserModelCatHands.SQL_CREATE_TABLE);
+        UserModelCatHands.insert(db, new UserModel(null, "taro", "Taro Yamada", "A",
                 Role.PROGRAMMER, new Date(), null, Authority.ADMIN));
-        UserModelHandler.insert(db, new UserModel(null, "hana", "Hana Yamada", "A", Role.DESIGNNER,
-                new Date(), null, Authority.ADMIN));
-        UserModelHandler.insert(db, new UserModel(null, "yuji", "Yuji Tanaka", "B",
+        UserModelCatHands.insert(db, new UserModel(null, "hana", "Hana Yamada", "A",
+                Role.DESIGNNER, new Date(), null, Authority.ADMIN));
+        UserModelCatHands.insert(db, new UserModel(null, "yuji", "Yuji Tanaka", "B",
                 Role.PROGRAMMER, new Date(), null, Authority.ADMIN));
-        UserModelHandler.insert(db, new UserModel(null, "chun", "Chun Tanaka", "B", Role.DESIGNNER,
-                new Date(), null, Authority.USER));
+        UserModelCatHands.insert(db, new UserModel(null, "chun", "Chun Tanaka", "B",
+                Role.DESIGNNER, new Date(), null, Authority.USER));
         { // findById
-            UserModel model = UserModelHandler.findById(db, 2L);
+            UserModel model = UserModelCatHands.findById(db, 2L);
             assertEquals("hana", model.getUsername());
         }
         { // findByUsername
-            UserModel model = UserModelHandler.findByUsername(db, "yuji");
+            UserModel model = UserModelCatHands.findByUsername(db, "yuji");
             assertEquals("yuji", model.getUsername());
         }
         { // findByTeamOrderByRoleAscAndIdAsc
-            List<UserModel> models = UserModelHandler.findByTeamOrderByRoleAscAndIdAsc(db, 0, "A");
+            List<UserModel> models = UserModelCatHands.findByTeamOrderByRoleAscAndIdAsc(db, 0, "A");
             assertEquals(2, models.size());
             assertEquals("hana", models.get(0).getUsername());
             assertEquals("taro", models.get(1).getUsername());
         }
         { // findByTeamOrderByRoleAscAndIdDesc
-            List<UserModel> models = UserModelHandler.findByTeamOrderByIdDesc(db, 0, "B");
+            List<UserModel> models = net.cattaka.util.cathandsgendroid.test.model.UserModelCatHands
+                    .findByTeamOrderByIdDesc(db, 0, "B");
             assertEquals(2, models.size());
             assertEquals("chun", models.get(0).getUsername());
             assertEquals("yuji", models.get(1).getUsername());
         }
         { // findByTeamOrderByRoleAscAndIdDesc
-            List<UserModel> models = UserModelHandler.findByAuthorityOrderByIdAsc(db, 0,
+            List<UserModel> models = UserModelCatHands.findByAuthorityOrderByIdAsc(db, 0,
                     Authority.ADMIN);
             assertEquals(3, models.size());
             assertEquals("taro", models.get(0).getUsername());

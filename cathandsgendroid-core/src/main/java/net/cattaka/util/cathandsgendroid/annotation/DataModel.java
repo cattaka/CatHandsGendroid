@@ -1,7 +1,8 @@
 
-package net.cattaka.util.cathandsgendroid;
+package net.cattaka.util.cathandsgendroid.annotation;
 
-public @interface GenDbHandler {
+
+public @interface DataModel {
     enum NamingConventions {
         LOWER_CAMEL_CASE, // lowerCamelCase
         UPPER_CAMEL_CASE, // UpperCamelCase
@@ -21,7 +22,7 @@ public @interface GenDbHandler {
 
     boolean columnNameConstants() default true;
 
-    boolean autoinclement() default true;
+    boolean autoincrement() default true;
 
     boolean genDbFunc() default true;
 

@@ -1,14 +1,17 @@
 
 package net.cattaka.util.cathandsgendroid.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.Date;
 
 import net.cattaka.util.cathandsgendroid.test.model.FullModel;
-import net.cattaka.util.cathandsgendroid.test.model.TinySerializable;
 import net.cattaka.util.cathandsgendroid.test.model.FullModel.TinyEnum;
-import net.cattaka.util.cathandsgendroid.test.model.handler.FullModelHandler;
+import net.cattaka.util.cathandsgendroid.test.model.FullModelCatHands;
+import net.cattaka.util.cathandsgendroid.test.model.TinySerializable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +28,7 @@ public class FullModelTest {
     @Test
     public void testDbFunc() {
         SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
-        db.execSQL(FullModelHandler.SQL_CREATE_TABLE);
+        db.execSQL(FullModelCatHands.SQL_CREATE_TABLE);
         FullModel model = new FullModel();
         { // Insert
             model.setKey(567);
@@ -53,10 +56,10 @@ public class FullModelTest {
             model.setShortValue((short)243);
             model.setStringValue("This is it");
             model.setTinyEnum(TinyEnum.A);
-            FullModelHandler.insert(db, model);
+            FullModelCatHands.insert(db, model);
         }
         {// compare
-            FullModel t = FullModelHandler.findByKey(db, model.getKey());
+            FullModel t = FullModelCatHands.findByKey(db, model.getKey());
             assertEqualsArray(model.getBlobValue(), t.getBlobValue());
             assertEquals(model.getBooleanValue(), t.getBooleanValue());
             assertEquals(model.getByteValue(), t.getByteValue());
@@ -83,36 +86,36 @@ public class FullModelTest {
             assertEquals(model.getTinyEnum(), t.getTinyEnum());
         }
         {
-            assertEquals(1, FullModelHandler.findByBooleanValue(db, 0, model.getBooleanValue())
+            assertEquals(1, FullModelCatHands.findByBooleanValue(db, 0, model.getBooleanValue())
                     .size());
-            assertEquals(1, FullModelHandler.findByByteValue(db, 0, model.getByteValue()).size());
-            assertEquals(1, FullModelHandler.findByCharacterValue(db, 0, model.getCharacterValue())
+            assertEquals(1, FullModelCatHands.findByByteValue(db, 0, model.getByteValue()).size());
+            assertEquals(1, FullModelCatHands
+                    .findByCharacterValue(db, 0, model.getCharacterValue()).size());
+            assertEquals(1, FullModelCatHands.findByDateValue(db, 0, model.getDateValue()).size());
+            assertEquals(1, FullModelCatHands.findByDoubleValue(db, 0, model.getDoubleValue())
                     .size());
-            assertEquals(1, FullModelHandler.findByDateValue(db, 0, model.getDateValue()).size());
-            assertEquals(1, FullModelHandler.findByDoubleValue(db, 0, model.getDoubleValue())
-                    .size());
-            // assertEquals(1,FullModelHandler.findByFloatValue(db, 0,
+            // assertEquals(1,FullModelCatHands.findByFloatValue(db, 0,
             // model.getFloatValue()).size());
-            assertEquals(1, FullModelHandler.findByIntegerValue(db, 0, model.getIntegerValue())
+            assertEquals(1, FullModelCatHands.findByIntegerValue(db, 0, model.getIntegerValue())
                     .size());
-            assertNotNull(FullModelHandler.findByKey(db, model.getKey()));
-            assertEquals(1, FullModelHandler.findByLongValue(db, 0, model.getLongValue()).size());
-            assertEquals(1, FullModelHandler.findByPBooleanValue(db, 0, model.getPBooleanValue())
+            assertNotNull(FullModelCatHands.findByKey(db, model.getKey()));
+            assertEquals(1, FullModelCatHands.findByLongValue(db, 0, model.getLongValue()).size());
+            assertEquals(1, FullModelCatHands.findByPBooleanValue(db, 0, model.getPBooleanValue())
                     .size());
-            assertEquals(1, FullModelHandler.findByPByteValue(db, 0, model.getPByteValue()).size());
-            assertEquals(1, FullModelHandler.findByPCharValue(db, 0, model.getPCharValue()).size());
-            assertEquals(1, FullModelHandler.findByPDoubleValue(db, 0, model.getPDoubleValue())
+            assertEquals(1, FullModelCatHands.findByPByteValue(db, 0, model.getPByteValue()).size());
+            assertEquals(1, FullModelCatHands.findByPCharValue(db, 0, model.getPCharValue()).size());
+            assertEquals(1, FullModelCatHands.findByPDoubleValue(db, 0, model.getPDoubleValue())
                     .size());
-            // assertEquals(1,FullModelHandler.findByPFloatValue(db, 0,
+            // assertEquals(1,FullModelCatHands.findByPFloatValue(db, 0,
             // model.getPFloatValue()).size());
-            assertEquals(1, FullModelHandler.findByPIntValue(db, 0, model.getPIntValue()).size());
-            assertEquals(1, FullModelHandler.findByPLongValue(db, 0, model.getPLongValue()).size());
-            assertEquals(1, FullModelHandler.findByPShortValue(db, 0, model.getPShortValue())
+            assertEquals(1, FullModelCatHands.findByPIntValue(db, 0, model.getPIntValue()).size());
+            assertEquals(1, FullModelCatHands.findByPLongValue(db, 0, model.getPLongValue()).size());
+            assertEquals(1, FullModelCatHands.findByPShortValue(db, 0, model.getPShortValue())
                     .size());
-            assertEquals(1, FullModelHandler.findByShortValue(db, 0, model.getShortValue()).size());
-            assertEquals(1, FullModelHandler.findByStringValue(db, 0, model.getStringValue())
+            assertEquals(1, FullModelCatHands.findByShortValue(db, 0, model.getShortValue()).size());
+            assertEquals(1, FullModelCatHands.findByStringValue(db, 0, model.getStringValue())
                     .size());
-            assertEquals(1, FullModelHandler.findByTinyEnum(db, 0, model.getTinyEnum()).size());
+            assertEquals(1, FullModelCatHands.findByTinyEnum(db, 0, model.getTinyEnum()).size());
         }
         FullModel model2 = new FullModel();
         { // Update
@@ -141,10 +144,10 @@ public class FullModelTest {
             model2.setShortValue((short)867);
             model2.setStringValue("What's that?");
             model2.setTinyEnum(TinyEnum.B);
-            FullModelHandler.update(db, model2);
+            FullModelCatHands.update(db, model2);
         }
         {// compare
-            FullModel t = FullModelHandler.findByKey(db, model.getKey());
+            FullModel t = FullModelCatHands.findByKey(db, model.getKey());
             assertEqualsArray(model2.getBlobValue(), t.getBlobValue());
             assertEquals(model2.getBooleanValue(), t.getBooleanValue());
             assertEquals(model2.getByteValue(), t.getByteValue());
@@ -171,8 +174,8 @@ public class FullModelTest {
             assertEquals(model2.getTinyEnum(), t.getTinyEnum());
         }
         { // delete
-            assertEquals(1, FullModelHandler.delete(db, model.getKey()));
-            FullModel t = FullModelHandler.findByKey(db, model.getKey());
+            assertEquals(1, FullModelCatHands.delete(db, model.getKey()));
+            FullModel t = FullModelCatHands.findByKey(db, model.getKey());
             assertNull(t);
         }
 
@@ -182,14 +185,14 @@ public class FullModelTest {
     @Test
     public void testDbFunc_null() {
         SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
-        db.execSQL(FullModelHandler.SQL_CREATE_TABLE);
+        db.execSQL(FullModelCatHands.SQL_CREATE_TABLE);
         FullModel model = new FullModel();
         { // Insert
             model.setKey(567);
-            FullModelHandler.insert(db, model);
+            FullModelCatHands.insert(db, model);
         }
         {// compare
-            FullModel t = FullModelHandler.findByKey(db, model.getKey());
+            FullModel t = FullModelCatHands.findByKey(db, model.getKey());
             assertEquals(model.getBlobValue(), t.getBlobValue());
             assertEquals(model.getBooleanValue(), t.getBooleanValue());
             assertEquals(model.getByteValue(), t.getByteValue());
@@ -320,31 +323,32 @@ public class FullModelTest {
             assertEquals(model.getTinyEnum(), t.getTinyEnum());
         }
     }
+
     private void assertEqualsArray(byte[] b1, byte[] b2) {
-    	if (b1 == b2) {
-    		// ok
-    	} else if (b1 != null) {
-    		if (b2 != null) {
-    			if (b1.length == b2.length) {
-    				for (int i=0;i<b1.length;i++) {
-    					if (b1[i] == b2[i]) {
-    						// ok
-    					} else {
-    	        	    	fail();
-    					}
-    				}
-    			} else {
-        	    	fail();
-    			}
-    		} else {
-    	    	fail();
-    		}
-    	} else {
-    		if (b2 != null) {
-    	    	fail();
-    		} else {
-    			// ok
-    		}
-    	}
+        if (b1 == b2) {
+            // ok
+        } else if (b1 != null) {
+            if (b2 != null) {
+                if (b1.length == b2.length) {
+                    for (int i = 0; i < b1.length; i++) {
+                        if (b1[i] == b2[i]) {
+                            // ok
+                        } else {
+                            fail();
+                        }
+                    }
+                } else {
+                    fail();
+                }
+            } else {
+                fail();
+            }
+        } else {
+            if (b2 != null) {
+                fail();
+            } else {
+                // ok
+            }
+        }
     }
 }

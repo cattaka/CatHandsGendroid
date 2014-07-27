@@ -1,4 +1,4 @@
-package net.cattaka.cathandsgendroid;
+package net.cattaka.util.cathandsgendroid.accessor;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,7 +13,7 @@ public interface IAccessor<T> {
     public void writeToStream(DataOutputStream out, T value) throws IOException;
     public T readFromParcel(Parcel p);
     public void writeToParcel(Parcel p, T value);
-    public T readFromCursor(Cursor c, int idx, T defaultValue);
+    public T readFromCursor(Cursor c, int idx);
     public void putToContentValues(ContentValues values, String columnName, T value);
     public String stringValue(T value);
 }

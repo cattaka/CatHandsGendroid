@@ -3,13 +3,12 @@ package net.cattaka.util.cathandsgendroid.test.model;
 
 import java.util.Date;
 
-import net.cattaka.util.cathandsgendroid.Attribute;
-import net.cattaka.util.cathandsgendroid.GenDbHandler;
-import net.cattaka.util.cathandsgendroid.test.model.handler.FullModelHandler;
+import net.cattaka.util.cathandsgendroid.annotation.DataModel;
+import net.cattaka.util.cathandsgendroid.annotation.DataModelAttrs;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-@GenDbHandler(find = {
+@DataModel(find = {
         // "blobValue",
         "booleanValue", "byteValue", "characterValue", "dateValue", "doubleValue", "floatValue",
         "integerValue", "key", "longValue",
@@ -18,7 +17,7 @@ import android.os.Parcelable;
         "pLongValue", "pShortValue",
         // "serializable",
         "shortValue", "stringValue", "tinyEnum"
-}, genDbFunc = true, genParcelFunc = true, genContentResolverFunc = true, autoinclement = false)
+}, genDbFunc = true, genParcelFunc = true, genContentResolverFunc = true, autoincrement = false)
 public class FullModel implements Parcelable {
     @Override
     public int describeContents() {
@@ -27,13 +26,13 @@ public class FullModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        FullModelHandler.writeToParcel(this, dest, flags);
+        FullModelCatHands.writeToParcel(this, dest, flags);
     }
 
     public static final Parcelable.Creator<FullModel> CREATOR = new Parcelable.Creator<FullModel>() {
         public FullModel createFromParcel(Parcel in) {
             FullModel model = new FullModel();
-            FullModelHandler.readFromParcel(model, in);
+            FullModelCatHands.readFromParcel(model, in);
             return model;
         }
 
@@ -49,7 +48,7 @@ public class FullModel implements Parcelable {
         A, B, C
     }
 
-    @Attribute(primaryKey = true)
+    @DataModelAttrs(primaryKey = true)
     private long key;
 
     private byte[] blobValue;
