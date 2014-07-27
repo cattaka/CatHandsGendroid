@@ -57,6 +57,8 @@ public class DataModelProcessor {
 
         public String origJavaDataType;
 
+        public String primitiveJavaDataType;
+
         public boolean primitiveType;
 
         public String columnName;
@@ -320,6 +322,7 @@ public class DataModelProcessor {
             fe.origName = String.valueOf(ve.getSimpleName());
             fe.javaDataType = ift.javaDataType;
             fe.origJavaDataType = ift.origJavaDataType;
+            fe.primitiveJavaDataType = ift.primitiveJavaDataType;
             fe.dbDataType = ift.dbDataType;
             fe.setter = "set" + convertCap(fe.origName, true);
             fe.getter = "get" + convertCap(fe.origName, true);

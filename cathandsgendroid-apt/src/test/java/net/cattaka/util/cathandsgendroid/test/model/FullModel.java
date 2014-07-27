@@ -17,7 +17,7 @@ import android.os.Parcelable;
         "pLongValue", "pShortValue",
         // "serializable",
         "shortValue", "stringValue", "tinyEnum"
-}, genDbFunc = true, genParcelFunc = true, genContentResolverFunc = true, autoincrement = false)
+}, genDbFunc = true, genParcelFunc = true, genContentResolverFunc = true, autoincrement = true)
 public class FullModel implements Parcelable {
     @Override
     public int describeContents() {
