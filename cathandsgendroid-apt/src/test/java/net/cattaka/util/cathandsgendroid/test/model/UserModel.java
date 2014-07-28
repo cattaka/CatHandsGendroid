@@ -39,7 +39,7 @@ public class UserModel {
 
     private List<String> tags;
 
-    @DataModelAttrs(version = 3, accessor = EnumOrderAccessor.class)
+    @DataModelAttrs(version = 3, accessor = EnumOrderAccessor.class, dbDataType="INTEGER")
     private Authority authority;
 
     @DataModelAttrs(ignore = true)

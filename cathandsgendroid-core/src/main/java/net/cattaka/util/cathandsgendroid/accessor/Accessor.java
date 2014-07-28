@@ -340,7 +340,7 @@ public class Accessor {
 
         @Override
         public String stringValue(Character value) {
-            return (value != null) ? String.valueOf(value) : null;
+            return (value != null) ? String.valueOf((short)value.charValue()) : null;
         };
     };
 
@@ -386,7 +386,7 @@ public class Accessor {
 
         @Override
         public String stringValue(Boolean value) {
-            return (value != null) ? String.valueOf(value) : null;
+            return (value != null) ? String.valueOf(value ? 1 : 0) : null;
         };
     };
 
