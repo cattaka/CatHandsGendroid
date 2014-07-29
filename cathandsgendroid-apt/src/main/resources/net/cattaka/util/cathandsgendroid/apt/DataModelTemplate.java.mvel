@@ -37,6 +37,17 @@ public class @{genClassName} {
         "ALTER TABLE @{tableName} ADD COLUMN @{fieldEntry.columnName} @{fieldEntry.dbDataType}",@end{}
     };
 @end{}@code{lastVersion=item.version}@end{}@end{}
+
+    public static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+@code{counter=0;lastVersion=0;}@foreach{item:findEntriesPerVersions}@if{counter++>0}
+        if (oldVersion < @{item.version}) {
+            for (String sql : SQL_ALTER_TABLE_@{lastVersion}_TO_@{item.version}) {
+                db.execSQL(sql);
+            }
+        }
+@end{}@code{lastVersion=item.version}@end{}
+    };
+
     public static final String TABLE_NAME = "@{tableName}";
     public static final String COLUMNS = "@code{counter = 0}@foreach{fieldEntry : fieldEntries}@{(counter++>0)?",":""}@{fieldEntry.columnName}@end{}";
     public static final String[] COLUMNS_ARRAY = new String[] {@code{counter = 0}@foreach{fieldEntry : fieldEntries}@{(counter++>0)?",":""}"@{fieldEntry.columnName}"@end{}};

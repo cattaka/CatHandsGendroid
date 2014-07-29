@@ -74,8 +74,6 @@ public class DataModelProcessor {
 
         public boolean forParcel = true;
 
-        public boolean ignore = false;
-
         public boolean primaryKey = false;
 
         public long version = 1;
@@ -337,7 +335,6 @@ public class DataModelProcessor {
                 fe.forContentResolver = attr.forContentResolver();
                 fe.forDb = attr.forDb();
                 fe.forParcel = attr.forParcel();
-                fe.ignore = attr.ignore();
                 fe.primaryKey = attr.primaryKey();
                 fe.version = attr.version();
             }
