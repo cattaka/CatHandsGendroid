@@ -35,6 +35,7 @@ import net.cattaka.util.cathandsgendroid.accessor.EnumNameAccessor;
 import net.cattaka.util.cathandsgendroid.accessor.IAccessor;
 import net.cattaka.util.cathandsgendroid.accessor.ParcelableAccessor;
 import net.cattaka.util.cathandsgendroid.accessor.SerializableAccessor;
+import net.cattaka.util.cathandsgendroid.annotation.AccessorAttrs;
 import net.cattaka.util.cathandsgendroid.annotation.DataModel;
 import net.cattaka.util.cathandsgendroid.annotation.DataModel.NamingConventions;
 import net.cattaka.util.cathandsgendroid.annotation.DataModelAttrs;
@@ -135,7 +136,7 @@ public class DataModelProcessor {
         for (Element ee : ElementFilter.fieldsIn(Bug300408
                 .getEnclosedElementsDeclarationOrder(element))) {
             VariableElement ve = (VariableElement)ee;
-            FieldEntry fe = pullFieldEntry(annotation, ve, importClasses);
+            FieldEntry fe = createFieldEntry(annotation, ve, importClasses);
             if (fe != null) {
                 fieldEntries.add(fe);
                 columnName2FieldEntry.put(fe.columnName, fe);
@@ -228,7 +229,7 @@ public class DataModelProcessor {
         }
         String generated = (String)TemplateRuntime.eval(template, map);
 
-        System.out.println(generated);
+        // System.out.println(generated);
         {
             String qualifiedName = ((packageName.length() > 0) ? packageName + "." : "")
                     + genClassName;
@@ -302,20 +303,20 @@ public class DataModelProcessor {
         return orderByEntries;
     }
 
-    public static FieldEntry pullFieldEntry(DataModel annotation, VariableElement ve,
+    public static FieldEntry createFieldEntry(DataModel annotation, VariableElement ve,
             Set<String> destImportClasses) {
         DataModelAttrs attr = ve.getAnnotation(DataModelAttrs.class);
         if (attr != null && attr.ignore()) {
             return null;
         }
 
-        InnerFieldType ift = printElement(ve.asType(), attr);
+        InnerFieldType ift = createInnerFieldType(ve.asType(), attr);
 
-        System.out.print("\t" + ve.getSimpleName());
-        if (ift != null) {
-            System.out.print("\t" + ift.accessor);
-        }
-        System.out.println();
+        // System.out.print("\t" + ve.getSimpleName());
+//        if (ift != null) {
+//            System.out.print("\t" + ift.accessor);
+//        }
+//        System.out.println();
 
         if (ift != null) {
             FieldEntry fe = new FieldEntry();
@@ -346,15 +347,17 @@ public class DataModelProcessor {
         }
     }
 
-    public static InnerFieldType printElement(TypeMirror tm, DataModelAttrs attr) {
+    public static InnerFieldType createInnerFieldType(TypeMirror tm, DataModelAttrs attr) {
         InnerFieldType result = null;
-        System.out.print(" : " + tm.getKind());
+		// System.out.print(" : " + tm.getKind());
         if (attr != null && !IAccessor.class.getName().equals(pickAccessor(attr))) {
-            result = InnerFieldType.createCustomType(String.valueOf(tm), pickAccessor(attr),
-                    attr.dbDataType());
+        	String accessorName = pickAccessor(attr);
+        	String dbDataType = pickDbDataType(accessorName);
+            result = InnerFieldType.createCustomType(String.valueOf(tm), accessorName,
+            		dbDataType);
         } else if (tm.getKind() == TypeKind.DECLARED) {
             TypeElement te2 = (TypeElement)((DeclaredType)tm).asElement();
-            System.out.print(" : " + te2.getQualifiedName());
+            //System.out.print(" : " + te2.getQualifiedName());
             if (te2.getQualifiedName().contentEquals(Boolean.class.getCanonicalName())) {
                 result = InnerFieldType.BOOLEAN;
             } else if (te2.getQualifiedName().contentEquals(Byte.class.getCanonicalName())) {
@@ -378,7 +381,7 @@ public class DataModelProcessor {
             } else if (hasSuperclass((DeclaredType)tm, "java.util.List")) {
                 List<? extends TypeMirror> tas = ((DeclaredType)tm).getTypeArguments();
                 if (tas.size() > 0) {
-                    InnerFieldType ift = printElement(tas.get(0), null);
+                    InnerFieldType ift = createInnerFieldType(tas.get(0), null);
                     result = InnerFieldType.createListType(ift);
                 }
             } else if (hasSuperclass((DeclaredType)tm, "java.lang.Enum")) {
@@ -396,7 +399,7 @@ public class DataModelProcessor {
             if (tm2.getKind() == TypeKind.BYTE) {
                 result = InnerFieldType.BLOB;
             } else {
-                InnerFieldType ift = printElement(tm2, null);
+                InnerFieldType ift = createInnerFieldType(tm2, null);
                 result = InnerFieldType.createArrayType(ift);
             }
         } else if (tm.getKind() == TypeKind.BOOLEAN) {
@@ -464,6 +467,19 @@ public class DataModelProcessor {
                 return String.valueOf(type);
             }
         }
+    }
+
+    private static String pickDbDataType(String className) {
+        try {
+        	Class<?> clazz = Class.forName(className);
+        	AccessorAttrs attrs = clazz.getAnnotation(AccessorAttrs.class);
+        	if (attrs != null) {
+        		return attrs.dbDataType();
+        	}
+        } catch (ClassNotFoundException e) {
+        	// ignore
+        }
+        return "TEXT";
     }
 
     private static String convertName(NamingConventions namingConventions, String src) {

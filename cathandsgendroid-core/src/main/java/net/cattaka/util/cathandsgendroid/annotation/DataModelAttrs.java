@@ -1,8 +1,15 @@
 
 package net.cattaka.util.cathandsgendroid.annotation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import net.cattaka.util.cathandsgendroid.accessor.IAccessor;
 
+@Retention(RetentionPolicy.SOURCE)
+@Target(ElementType.FIELD)
 public @interface DataModelAttrs {
     boolean ignore() default false;
     boolean forDb() default true;
@@ -13,7 +20,6 @@ public @interface DataModelAttrs {
 
     long version() default 1;
 
-    String dbDataType() default "";
 	@SuppressWarnings("rawtypes")
     Class<? extends IAccessor> accessor() default IAccessor.class;
 

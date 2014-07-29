@@ -5,10 +5,13 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.cattaka.util.cathandsgendroid.annotation.AccessorAttrs;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 
+@AccessorAttrs(dbDataType="TEXT")
 public class EnumNameAccessor<T extends Enum<T>> implements IAccessor<T> {
 
     public static <T extends Enum<T>> IAccessor<T> createAccessor(Class<T> clazz) {

@@ -11,6 +11,7 @@ import java.util.Date;
 import net.cattaka.util.cathandsgendroid.test.model.FullModel;
 import net.cattaka.util.cathandsgendroid.test.model.FullModel.TinyEnum;
 import net.cattaka.util.cathandsgendroid.test.model.FullModelCatHands;
+import net.cattaka.util.cathandsgendroid.test.model.TinyParcelable;
 import net.cattaka.util.cathandsgendroid.test.model.TinySerializable;
 
 import org.junit.Test;
@@ -40,15 +41,15 @@ public class FullModelTest {
             model.setCharacterValue('C');
             model.setDateValue(new Date());
             model.setDoubleValue(12.34);
-            model.setFloatValue((float)56.78);
+            model.setFloatValue(56.0f);
             model.setIntegerValue(234);
             model.setLongValue(987L);
-            // model.setParcelableValue(new TinyParcelable(333));
+            model.setParcelableValue(new TinyParcelable(333));
             model.setPBooleanValue(true);
             model.setPByteValue((byte)13);
             model.setPCharValue('B');
             model.setPDoubleValue(43.21);
-            model.setPFloatValue((float)76.54);
+            model.setPFloatValue(76.0f);
             model.setPIntValue(345);
             model.setPLongValue(876L);
             model.setPShortValue((short)132);
@@ -70,6 +71,7 @@ public class FullModelTest {
             assertEquals(model.getIntegerValue(), t.getIntegerValue());
             assertEquals(model.getKey(), t.getKey());
             assertEquals(model.getLongValue(), t.getLongValue());
+            // Parcelable is out of support for DB.
             // assertEquals(model.getParcelableValue().getData(),
             // t.getParcelableValue().getData());
             assertEquals(model.getPBooleanValue(), t.getPBooleanValue());
@@ -94,8 +96,7 @@ public class FullModelTest {
             assertEquals(1, FullModelCatHands.findByDateValue(db, 0, model.getDateValue()).size());
             assertEquals(1, FullModelCatHands.findByDoubleValue(db, 0, model.getDoubleValue())
                     .size());
-            // assertEquals(1,FullModelCatHands.findByFloatValue(db, 0,
-            // model.getFloatValue()).size());
+            assertEquals(1,FullModelCatHands.findByFloatValue(db, 0, model.getFloatValue()).size());
             assertEquals(1, FullModelCatHands.findByIntegerValue(db, 0, model.getIntegerValue())
                     .size());
             assertNotNull(FullModelCatHands.findByKey(db, model.getKey()));
@@ -106,8 +107,7 @@ public class FullModelTest {
             assertEquals(1, FullModelCatHands.findByPCharValue(db, 0, model.getPCharValue()).size());
             assertEquals(1, FullModelCatHands.findByPDoubleValue(db, 0, model.getPDoubleValue())
                     .size());
-            // assertEquals(1,FullModelCatHands.findByPFloatValue(db, 0,
-            // model.getPFloatValue()).size());
+            assertEquals(1,FullModelCatHands.findByPFloatValue(db, 0, model.getPFloatValue()).size());
             assertEquals(1, FullModelCatHands.findByPIntValue(db, 0, model.getPIntValue()).size());
             assertEquals(1, FullModelCatHands.findByPLongValue(db, 0, model.getPLongValue()).size());
             assertEquals(1, FullModelCatHands.findByPShortValue(db, 0, model.getPShortValue())
@@ -131,6 +131,7 @@ public class FullModelTest {
             model2.setFloatValue((float)67.89);
             model2.setIntegerValue(345);
             model2.setLongValue(876L);
+            // Parcelable is out of support for DB.
             // model2.setParcelableValue(new TinyParcelable(222));
             model2.setPBooleanValue(false);
             model2.setPByteValue((byte)14);
@@ -158,6 +159,7 @@ public class FullModelTest {
             assertEquals(model2.getIntegerValue(), t.getIntegerValue());
             assertEquals(model2.getKey(), t.getKey());
             assertEquals(model2.getLongValue(), t.getLongValue());
+            // Parcelable is out of support for DB.
             // assertEquals(model2.getParcelableValue().getData(),
             // t.getParcelableValue().getData());
             assertEquals(model2.getPBooleanValue(), t.getPBooleanValue());
@@ -203,7 +205,7 @@ public class FullModelTest {
             assertEquals(model.getIntegerValue(), t.getIntegerValue());
             assertEquals(model.getKey(), t.getKey());
             assertEquals(model.getLongValue(), t.getLongValue());
-            // assertEquals(model.getParcelableValue(), t.getParcelableValue());
+            assertEquals(model.getParcelableValue(), t.getParcelableValue());
             assertEquals(model.getPBooleanValue(), t.getPBooleanValue());
             assertEquals(model.getPByteValue(), t.getPByteValue());
             assertEquals(model.getPCharValue(), t.getPCharValue());
@@ -235,6 +237,7 @@ public class FullModelTest {
             model.setFloatValue((float)56.78);
             model.setIntegerValue(234);
             model.setLongValue(987L);
+            // Parcelable is out of support for DB.
             // model.setParcelableValue(new TinyParcelable(333));
             model.setPBooleanValue(true);
             model.setPByteValue((byte)13);
@@ -268,6 +271,7 @@ public class FullModelTest {
             assertEquals(model.getIntegerValue(), t.getIntegerValue());
             assertEquals(model.getKey(), t.getKey());
             assertEquals(model.getLongValue(), t.getLongValue());
+            // Parcelable is out of support for DB.
             // assertEquals(model.getParcelableValue().getData(),
             // t.getParcelableValue().getData());
             assertEquals(model.getPBooleanValue(), t.getPBooleanValue());
@@ -308,6 +312,7 @@ public class FullModelTest {
             assertEquals(model.getIntegerValue(), t.getIntegerValue());
             assertEquals(model.getKey(), t.getKey());
             assertEquals(model.getLongValue(), t.getLongValue());
+            // Parcelable is out of support for DB.
             // assertEquals(model.getParcelableValue(), t.getParcelableValue());
             assertEquals(model.getPBooleanValue(), t.getPBooleanValue());
             assertEquals(model.getPByteValue(), t.getPByteValue());

@@ -3,6 +3,7 @@ package net.cattaka.util.cathandsgendroid.test.model;
 
 import java.util.Date;
 
+import net.cattaka.util.cathandsgendroid.accessor.EnumOrderAccessor;
 import net.cattaka.util.cathandsgendroid.annotation.DataModel;
 import net.cattaka.util.cathandsgendroid.annotation.DataModelAttrs;
 import android.os.Parcel;
@@ -65,6 +66,9 @@ public class FullModel implements Parcelable {
 
     private TinyEnum tinyEnum;
 
+    @DataModelAttrs(accessor=EnumOrderAccessor.class)
+    private TinyEnum tinyEnumOrdered;
+
     private Float floatValue;
 
     private Integer integerValue;
@@ -87,7 +91,8 @@ public class FullModel implements Parcelable {
 
     private short pShortValue;
 
-    // private TinyParcelable parcelableValue;
+    @DataModelAttrs(forDb=false)
+    private TinyParcelable parcelableValue;
 
     private TinySerializable serializable;
 
@@ -151,7 +156,15 @@ public class FullModel implements Parcelable {
         this.tinyEnum = tinyEnum;
     }
 
-    public Float getFloatValue() {
+    public TinyEnum getTinyEnumOrdered() {
+		return tinyEnumOrdered;
+	}
+
+	public void setTinyEnumOrdered(TinyEnum tinyEnumOrdered) {
+		this.tinyEnumOrdered = tinyEnumOrdered;
+	}
+
+	public Float getFloatValue() {
         return floatValue;
     }
 
@@ -239,13 +252,13 @@ public class FullModel implements Parcelable {
         this.pShortValue = pShortValue;
     }
 
-    // public TinyParcelable getParcelableValue() {
-    // return parcelableValue;
-    // }
-    //
-    // public void setParcelableValue(TinyParcelable parcelableValue) {
-    // this.parcelableValue = parcelableValue;
-    // }
+	public TinyParcelable getParcelableValue() {
+		return parcelableValue;
+	}
+
+	public void setParcelableValue(TinyParcelable parcelableValue) {
+		this.parcelableValue = parcelableValue;
+	}
 
     public TinySerializable getSerializable() {
         return serializable;
