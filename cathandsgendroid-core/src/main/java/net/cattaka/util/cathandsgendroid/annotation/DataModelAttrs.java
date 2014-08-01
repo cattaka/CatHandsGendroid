@@ -8,6 +8,12 @@ import java.lang.annotation.Target;
 
 import net.cattaka.util.cathandsgendroid.accessor.IAccessor;
 
+/**
+ * An annotation for fields of DataModel.
+ * 
+ * @see DataModel
+ * @author cattaka
+ */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.FIELD)
 public @interface DataModelAttrs {
