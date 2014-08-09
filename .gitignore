@@ -1,3 +1,5 @@
+.DS_Store
+
 **/bin/
 **/.apt_generated/
 **/gen/
@@ -6,3 +8,12 @@
 **/.factorypath
 **/.project
 **/.settings/
+
+target
+.classpath
+.factorypath
+.project
+.settings
+
+pom.xml.releaseBackup
+release.properties
