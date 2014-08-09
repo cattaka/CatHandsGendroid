@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface AccessorAttrs {
 	/**
-	 * Indicate that which data type the accessor uses.
+	 * Specify that which data type the accessor uses.
 	 * 
 	 * @return data type on DB
 	 */
