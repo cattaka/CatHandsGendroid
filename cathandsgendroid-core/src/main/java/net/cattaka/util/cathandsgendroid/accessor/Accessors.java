@@ -20,8 +20,15 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * The collections of standard accessors.
+ * 
+ * @author cattaka
+ */
 public class Accessors {
-
+    /**
+     * The accessor for byte.
+     */
     public static class PrimitiveByteAccessor implements IAccessor<Byte> {
         static PrimitiveByteAccessor instance;
 
@@ -68,6 +75,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for short.
+     */
     public static class PrimitiveShortAccessor implements IAccessor<Short> {
         static PrimitiveShortAccessor instance;
 
@@ -114,6 +124,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for int.
+     */
     public static class PrimitiveIntegerAccessor implements IAccessor<Integer> {
         static PrimitiveIntegerAccessor instance;
 
@@ -160,6 +173,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for long.
+     */
     public static class PrimitiveLongAccessor implements IAccessor<Long> {
         static PrimitiveLongAccessor instance;
 
@@ -206,6 +222,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for float.
+     */
     public static class PrimitiveFloatAccessor implements IAccessor<Float> {
         static PrimitiveFloatAccessor instance;
 
@@ -252,6 +271,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for double.
+     */
     public static class PrimitiveDoubleAccessor implements IAccessor<Double> {
         static PrimitiveDoubleAccessor instance;
 
@@ -298,6 +320,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for char.
+     */
     public static class PrimitiveCharacterAccessor implements IAccessor<Character> {
         static PrimitiveCharacterAccessor instance;
 
@@ -344,6 +369,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for boolean.
+     */
     public static class PrimitiveBooleanAccessor implements IAccessor<Boolean> {
         static PrimitiveBooleanAccessor instance;
 
@@ -390,6 +418,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for {@link Byte}.
+     */
     public static class ByteAccessor implements IAccessor<Byte> {
         static ByteAccessor instance;
 
@@ -442,6 +473,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for {@link Short}.
+     */
     public static class ShortAccessor implements IAccessor<Short> {
         static ShortAccessor instance;
 
@@ -494,6 +528,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for {@link Integer}.
+     */
     public static class IntegerAccessor implements IAccessor<Integer> {
         static IntegerAccessor instance;
 
@@ -546,6 +583,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for {@link Long}.
+     */
     public static class LongAccessor implements IAccessor<Long> {
         static LongAccessor instance;
 
@@ -598,6 +638,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for {@link Float}.
+     */
     public static class FloatAccessor implements IAccessor<Float> {
         static FloatAccessor instance;
 
@@ -650,6 +693,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for {@link Double}.
+     */
     public static class DoubleAccessor implements IAccessor<Double> {
         static DoubleAccessor instance;
 
@@ -702,6 +748,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for {@link Character}.
+     */
     public static class CharacterAccessor implements IAccessor<Character> {
         static CharacterAccessor instance;
 
@@ -754,6 +803,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for {@link Boolean}.
+     */
     public static class BooleanAccessor implements IAccessor<Boolean> {
         static BooleanAccessor instance;
 
@@ -806,6 +858,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for {@link String}.
+     */
     public static class StringAccessor implements IAccessor<String> {
         static StringAccessor instance;
 
@@ -858,6 +913,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for byte[].
+     */
     public static class BlobAccessor implements IAccessor<byte[]> {
         static BlobAccessor instance;
 
@@ -939,6 +997,9 @@ public class Accessors {
         };
     };
 
+    /**
+     * The accessor for {@link Bundle}.
+     */
     public static class BundleAccessor implements IAccessor<Bundle> {
         static BundleAccessor instance;
 
@@ -994,6 +1055,9 @@ public class Accessors {
         }
     };
 
+    /**
+     * The accessor for {@link Date}.
+     */
     public static class DateAccessor implements IAccessor<Date> {
         static DateAccessor instance;
 
@@ -1046,6 +1110,12 @@ public class Accessors {
         }
     };
 
+    /**
+     * Create the accessor for {@link List}.
+     * 
+     * @param child accessor for inherited datatype. 
+     * @return created accessor
+     */
     public static <T> IAccessor<List<T>> createListAccessor(final IAccessor<T> child) {
         return new IAccessor<List<T>>() {
             @Override
@@ -1139,6 +1209,12 @@ public class Accessors {
         };
     }
 
+    /**
+     * Create the accessor for array.
+     * 
+     * @param child accessor for inherited datatype. 
+     * @return created accessor
+     */
     public static <T> IAccessor<T[]> createArrayAccessor(final IAccessor<T> child,
             final Class<T> cls) {
         return new IAccessor<T[]>() {

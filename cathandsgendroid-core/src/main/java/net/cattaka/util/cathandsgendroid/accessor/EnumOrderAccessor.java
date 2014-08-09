@@ -11,9 +11,18 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 
+/**
+ * The accessor for Enum. This uses "order" for representation of datatype.
+ */
 @AccessorAttrs(dbDataType="INTEGER")
 public class EnumOrderAccessor<T extends Enum<T>> implements IAccessor<T> {
 
+    /**
+     * Create the accessor for enum.
+     * 
+     * @param child accessor for inherited datatype. 
+     * @return created accessor
+     */
     public static <T extends Enum<T>> IAccessor<T> createAccessor(Class<T> clazz) {
         return new EnumOrderAccessor<T>(clazz);
     }

@@ -11,9 +11,18 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 
+/**
+ * The accessor for Enum. This uses "name" for representation of datatype.
+ */
 @AccessorAttrs(dbDataType="TEXT")
 public class EnumNameAccessor<T extends Enum<T>> implements IAccessor<T> {
 
+    /**
+     * Create the accessor for enum.
+     * 
+     * @param child accessor for inherited datatype. 
+     * @return created accessor
+     */
     public static <T extends Enum<T>> IAccessor<T> createAccessor(Class<T> clazz) {
         return new EnumNameAccessor<T>(clazz);
     }

@@ -5,7 +5,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.cattaka.util.cathandsgendroid.accessor.Accessor.BlobAccessor;
+import net.cattaka.util.cathandsgendroid.accessor.Accessors.BlobAccessor;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
@@ -31,7 +31,7 @@ public class ParcelableAccessor<T extends Parcelable> implements IAccessor<T> {
             try {
                 parcel.unmarshall(bs, 0, bs.length);
                 parcel.setDataPosition(0);
-                Object obj = parcel.readParcelable(Accessor.class.getClassLoader());
+                Object obj = parcel.readParcelable(Accessors.class.getClassLoader());
                 if (clazz.isInstance(obj)) {
                     @SuppressWarnings("unchecked")
                     T t = (T)obj;
@@ -62,7 +62,7 @@ public class ParcelableAccessor<T extends Parcelable> implements IAccessor<T> {
     @Override
     public T readFromParcel(Parcel p) {
         if (p.readByte() != 0) {
-            Object obj = p.readParcelable(Accessor.class.getClassLoader());
+            Object obj = p.readParcelable(Accessors.class.getClassLoader());
             if (clazz.isInstance(obj)) {
                 @SuppressWarnings("unchecked")
                 T t = (T)obj;
@@ -88,7 +88,7 @@ public class ParcelableAccessor<T extends Parcelable> implements IAccessor<T> {
             try {
                 parcel.unmarshall(bs, 0, bs.length);
                 parcel.setDataPosition(0);
-                Object obj = parcel.readParcelable(Accessor.class.getClassLoader());
+                Object obj = parcel.readParcelable(Accessors.class.getClassLoader());
                 if (clazz.isInstance(obj)) {
                     @SuppressWarnings("unchecked")
                     T t = (T)obj;

@@ -42,7 +42,7 @@ import net.cattaka.util.cathandsgendroid.annotation.DataModelAttrs;
 
 import org.mvel2.templates.TemplateRuntime;
 
-public class DataModelProcessor {
+class DataModelProcessor {
     private ProcessingEnvironment processingEnv;
 
     public static class FieldEntry {

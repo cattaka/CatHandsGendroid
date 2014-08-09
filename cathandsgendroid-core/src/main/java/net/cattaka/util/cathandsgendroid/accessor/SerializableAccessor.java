@@ -10,7 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import net.cattaka.util.cathandsgendroid.accessor.Accessor.BlobAccessor;
+import net.cattaka.util.cathandsgendroid.accessor.Accessors.BlobAccessor;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
@@ -98,7 +98,7 @@ public class SerializableAccessor<T extends Serializable> implements IAccessor<T
 
     @Override
     public void putToContentValues(ContentValues values, String columnName, Serializable value) {
-        byte[] bs = Accessor.toByteArray(value);
+        byte[] bs = Accessors.toByteArray(value);
         values.put(columnName, bs);
     }
 

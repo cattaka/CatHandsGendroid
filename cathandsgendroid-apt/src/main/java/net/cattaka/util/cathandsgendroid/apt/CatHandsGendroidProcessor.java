@@ -14,6 +14,11 @@ import javax.lang.model.element.TypeElement;
 
 import net.cattaka.util.cathandsgendroid.annotation.DataModel;
 
+/**
+ * Annotation processing logic.
+ * 
+ * @author cattaka
+ */
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 @SupportedAnnotationTypes("net.cattaka.util.cathandsgendroid.annotation.*")
 public class CatHandsGendroidProcessor extends AbstractProcessor {

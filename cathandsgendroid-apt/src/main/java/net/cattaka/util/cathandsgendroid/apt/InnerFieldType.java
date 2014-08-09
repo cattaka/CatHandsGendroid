@@ -3,7 +3,7 @@ package net.cattaka.util.cathandsgendroid.apt;
 
 import java.util.Locale;
 
-public class InnerFieldType {
+class InnerFieldType {
     public static final InnerFieldType BLOB = new InnerFieldType(false, "Accessors.BlobAccessor.createAccessor(byte[].class)", "BLOB", "byte[]", null);
     public static final InnerFieldType BOOLEAN = new InnerFieldType(false, "Accessors.BooleanAccessor.createAccessor(Boolean.class)", "INTEGER", "Boolean", null);
     public static final InnerFieldType BUNDLE = new InnerFieldType(false, "Accessors.BundleAccessor.createAccessor(Bundle.class)", "BLOB", "Bundle", null);
