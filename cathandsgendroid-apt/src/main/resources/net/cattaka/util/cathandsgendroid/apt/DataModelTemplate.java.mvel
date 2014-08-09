@@ -1,7 +1,7 @@
 package @{packageName};
 
 import net.cattaka.util.cathandsgendroid.accessor.IAccessor;
-import net.cattaka.util.cathandsgendroid.accessor.Accessor;
+import net.cattaka.util.cathandsgendroid.accessor.Accessors;
 @if{annotation.genDbFunc() || annotation.genContentResolverFunc()}
 import android.content.ContentValues;
 import android.database.Cursor;

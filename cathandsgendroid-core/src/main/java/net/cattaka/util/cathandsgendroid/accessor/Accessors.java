@@ -20,7 +20,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Accessor {
+public class Accessors {
 
     public static class PrimitiveByteAccessor implements IAccessor<Byte> {
         static PrimitiveByteAccessor instance;
@@ -962,7 +962,7 @@ public class Accessor {
         @Override
         public Bundle readFromParcel(Parcel p) {
             if (p.readByte() != 0) {
-                return p.readBundle(Accessor.class.getClassLoader());
+                return p.readBundle(Accessors.class.getClassLoader());
             } else {
                 return null;
             }
