@@ -7,10 +7,6 @@
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<properties>
-		<cathandsgendroid.version>${project.version}</cathandsgendroid.version>
-	</properties>
-
 	<name>CatHandsGendroid</name>
 	<description>
         Lightweight utility generator for Android.
@@ -85,8 +81,8 @@
 	</profiles>
 
 	<modules>
-		<module>../cathandsgendroid-core</module>
-		<module>../cathandsgendroid-apt</module>
+		<module>cathandsgendroid-core</module>
+		<module>cathandsgendroid-apt</module>
 	</modules>
 
 	<distributionManagement>
@@ -109,55 +105,7 @@
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.5</version>
 				</plugin>
-				<plugin>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
-						<encoding>UTF-8</encoding>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-shade-plugin</artifactId>
-					<version>1.6</version>
-				</plugin>
 			</plugins>
 		</pluginManagement>
-		<plugins>
-			<plugin>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.3</version>
-				<executions>
-					<execution>
-						<id>source-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-					<docencoding>UTF-8</docencoding>
-					<charset>UTF-8</charset>
-					<links>
-						<link>http://docs.oracle.com/javase/jp/6/api/</link>
-					</links>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>site</phase>
-						<goals>
-							<goal>javadoc</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 	</build>
 </project>

@@ -8,27 +8,18 @@
 		</repository>
 	</repositories>
 	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>cathandsgendroid-apt</artifactId>
+	<name>CatHandsGendroid-apt</name>
+
 	<parent>
 		<groupId>net.cattaka</groupId>
 		<artifactId>cathandsgendroid-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../cathandsgendroid-parent</relativePath>
 	</parent>
-	<artifactId>cathandsgendroid-apt</artifactId>
-	<name>CatHandsGendroid-apt</name>
+
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
-						<encoding>utf-8</encoding>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -61,7 +52,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>1.6</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -80,6 +70,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -94,12 +85,6 @@
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
-			<version>4.1.1.4</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android-test</artifactId>
 			<version>4.1.1.4</version>
 			<scope>provided</scope>
 		</dependency>
