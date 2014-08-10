@@ -11,7 +11,7 @@
 		<cathandsgendroid.version>${project.version}</cathandsgendroid.version>
 	</properties>
 
-	<name>CatHandsGendroid</name>
+	<name>${project.groupId}:${project.artifactId}</name>
 	<description>
         Lightweight utility generator for Android.
         This generate Java source files.

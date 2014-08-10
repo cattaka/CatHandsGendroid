@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.cattaka</groupId>
-	<artifactId>cathandsgendroid-parent</artifactId>
+	<artifactId>cathandsgendroid</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>CatHandsGendroid</name>
+	<name>${project.groupId}:${project.artifactId}</name>
 	<description>
         Lightweight utility generator for Android.
         This generate Java source files.
