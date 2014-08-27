@@ -1,0 +1,79 @@
+package ${packageName};
+
+import java.util.HashMap;
+import java.util.Map;
+
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Handler.Callback;
+${importLines}
+
+public class ${asyncClassName}${fullGenerics} implements ${interfaceName}${shortGenerics} {
+    private static final int WORK_SIZE = ${workSize};
+    private static final int POOL_SIZE = ${poolSize};
+    private static final int EVENT_START = 1;
+
+${methodEventLines}
+
+    private static Callback sCallback = new Callback() {
+${suppressWarnings}
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+${caseLines}
+            }
+            return false;
+        }
+    };
+    private static Map<Looper, Handler> sHandlerMap = new HashMap<Looper, Handler>();
+    private Handler mHandler;
+    private Object[][] sOwnedPool = new Object[POOL_SIZE][WORK_SIZE];
+    private ${interfaceName}${shortGenerics} orig;
+
+    public ${asyncClassName}(${interfaceName}${shortGenerics} orig, Looper looper) {
+        super();
+        this.orig = orig;
+        synchronized (sHandlerMap) {
+            mHandler = sHandlerMap.get(looper);
+            if (mHandler == null) {
+                mHandler = new Handler(looper, sCallback);
+                sHandlerMap.put(looper, mHandler);
+            }
+        }
+    }
+
+    public ${asyncClassName}(${interfaceName}${shortGenerics} orig) {
+        this(orig, Looper.getMainLooper());
+    }
+
+
+${methodLines}
+
+    private Object[] obtain() {
+        final Object[][] pool = sOwnedPool;
+        synchronized (pool) {
+            Object[] p;
+            for (int i = 0; i < POOL_SIZE; i++) {
+                p = pool[i];
+                if (p != null) {
+                    pool[i] = null;
+                    return p;
+                }
+            }
+        }
+        return new Object[WORK_SIZE];
+    }
+
+    private void recycle(Object[] p) {
+        final Object[][] pool = sOwnedPool;
+        synchronized (pool) {
+            for (int i = 0; i < POOL_SIZE; i++) {
+                if (pool[i] == null) {
+                    pool[i] = p;
+                    return;
+                }
+            }
+        }
+    }
+}

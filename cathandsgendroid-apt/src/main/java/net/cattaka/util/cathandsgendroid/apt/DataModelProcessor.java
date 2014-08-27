@@ -2,9 +2,6 @@
 package net.cattaka.util.cathandsgendroid.apt;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +37,7 @@ import net.cattaka.util.cathandsgendroid.annotation.AccessorAttrs;
 import net.cattaka.util.cathandsgendroid.annotation.DataModel;
 import net.cattaka.util.cathandsgendroid.annotation.DataModel.NamingConventions;
 import net.cattaka.util.cathandsgendroid.annotation.DataModelAttrs;
+import net.cattaka.util.cathandsgendroid.apt.util.ResourceUtil;
 
 import org.mvel2.templates.TemplateRuntime;
 
@@ -238,7 +236,7 @@ class DataModelProcessor {
                 + "/DataModelTemplate.java.mvel";
         String template;
         try {
-            template = getResourceAsString(templateResource);
+            template = ResourceUtil.getResourceAsString(templateResource);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load:" + templateResource, e);
         }
@@ -548,30 +546,6 @@ class DataModelProcessor {
             return name.substring(0, 1).toUpperCase() + name.substring(1);
         } else {
             return name.substring(0, 1).toLowerCase() + name.substring(1);
-        }
-    }
-
-    private static String getResourceAsString(String resourceName) throws IOException {
-        InputStream in = null;
-        try {
-            in = DataModelProcessor.class.getClassLoader().getResourceAsStream(resourceName);
-            Reader reader = new InputStreamReader(in, "UTF-8");
-            StringBuilder sb = new StringBuilder();
-            char[] cbuf = new char[1 << 12];
-            int r;
-            while ((r = reader.read(cbuf)) > 0) {
-                sb.append(cbuf, 0, r);
-            }
-
-            return sb.toString();
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e2) {
-                    // ignore
-                }
-            }
         }
     }
 }
