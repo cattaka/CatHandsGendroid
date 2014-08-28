@@ -12,6 +12,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 
+import net.cattaka.util.cathandsgendroid.annotation.AsyncInterface;
 import net.cattaka.util.cathandsgendroid.annotation.DataModel;
 
 /**
@@ -32,6 +33,10 @@ public class CatHandsGendroidProcessor extends AbstractProcessor {
         DataModelProcessor processor = new DataModelProcessor(processingEnv);
         for (Element element : roundEnv.getElementsAnnotatedWith(DataModel.class)) {
             processor.process((TypeElement)element, roundEnv);
+        }
+        AsycInterfaceProcessor processor2 = new AsycInterfaceProcessor(processingEnv);
+        for (Element element : roundEnv.getElementsAnnotatedWith(AsyncInterface.class)) {
+            processor2.process((TypeElement)element, roundEnv);
         }
         return false;
     }

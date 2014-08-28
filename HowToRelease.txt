@@ -1,0 +1,11 @@
+# essential commands
+$ git flow release start x.x.x
+$ mvn -e release:prepare -Dresume=false
+$ mvn -e release:perform
+$ git flow release finish x.x.x
+
+
+# GPG environments setting, If you need.
+eval $(gpg-agent --daemon --no-grab --write-env-file $HOME/.gpg-agent-info)
+export GPG_TTY=$(tty)
+export GPG_AGENT_INFO

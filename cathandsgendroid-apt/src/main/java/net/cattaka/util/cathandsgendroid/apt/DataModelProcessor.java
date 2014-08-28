@@ -2,9 +2,6 @@
 package net.cattaka.util.cathandsgendroid.apt;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +17,7 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
@@ -39,6 +37,7 @@ import net.cattaka.util.cathandsgendroid.annotation.AccessorAttrs;
 import net.cattaka.util.cathandsgendroid.annotation.DataModel;
 import net.cattaka.util.cathandsgendroid.annotation.DataModel.NamingConventions;
 import net.cattaka.util.cathandsgendroid.annotation.DataModelAttrs;
+import net.cattaka.util.cathandsgendroid.apt.util.ResourceUtil;
 
 import org.mvel2.templates.TemplateRuntime;
 
@@ -77,6 +76,8 @@ class DataModelProcessor {
         public boolean primaryKey = false;
 
         public long version = 1;
+        
+        public boolean isNumber = false;
 
         public String getColumnNameCapped() {
             return convertCap(origName, true);
@@ -131,18 +132,32 @@ class DataModelProcessor {
         Map<String, FieldEntry> columnName2FieldEntry = new HashMap<String, DataModelProcessor.FieldEntry>();
         List<FieldEntry> fieldEntries = new ArrayList<DataModelProcessor.FieldEntry>();
         Set<String> importClasses = new TreeSet<String>();
-        for (Element ee : ElementFilter.fieldsIn(Bug300408
-                .getEnclosedElementsDeclarationOrder(element))) {
-            VariableElement ve = (VariableElement)ee;
-            FieldEntry fe = createFieldEntry(annotation, ve, importClasses);
-            if (fe != null) {
-                fieldEntries.add(fe);
-                columnName2FieldEntry.put(fe.columnName, fe);
-                if (fe.primaryKey) {
-                    primaryKey = fe;
-                }
-            }
-        }
+        {
+        	int primaryKeyCount = 0;
+	        for (Element ee : ElementFilter.fieldsIn(Bug300408
+	                .getEnclosedElementsDeclarationOrder(element))) {
+	            VariableElement ve = (VariableElement)ee;
+	            FieldEntry fe = createFieldEntry(annotation, ve, importClasses);
+	            if (fe != null) {
+	                fieldEntries.add(fe);
+	                columnName2FieldEntry.put(fe.columnName, fe);
+	                if (fe.primaryKey) {
+	                    primaryKey = fe;
+	                    primaryKeyCount++;
+	                }
+	            }
+	        }
+	        if (primaryKeyCount == 0) {
+	            processingEnv.getMessager().printMessage(Kind.ERROR, "At least one primary key is required. put @Attribute(primaryKey=true) to field of key", element);
+	        } else if (primaryKeyCount > 1) {
+	            processingEnv.getMessager().printMessage(Kind.ERROR, "Only single primary key is supported.", element);
+	        } else {
+		        if (annotation.autoincrement() && !primaryKey.isNumber) {
+		        	processingEnv.getMessager().printMessage(Kind.ERROR,
+	                        "use autoincrement=false, or use number type.", element);
+	            }
+	        }
+	    }
 
         List<FindEntriesPerVersion> findEntriesPerVersions = new ArrayList<DataModelProcessor.FindEntriesPerVersion>();
         {
@@ -221,7 +236,7 @@ class DataModelProcessor {
                 + "/DataModelTemplate.java.mvel";
         String template;
         try {
-            template = getResourceAsString(templateResource);
+            template = ResourceUtil.getResourceAsString(templateResource);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load:" + templateResource, e);
         }
@@ -301,21 +316,17 @@ class DataModelProcessor {
         return orderByEntries;
     }
 
-    public static FieldEntry createFieldEntry(DataModel annotation, VariableElement ve,
+    FieldEntry createFieldEntry(DataModel annotation, VariableElement ve,
             Set<String> destImportClasses) {
         DataModelAttrs attr = ve.getAnnotation(DataModelAttrs.class);
         if (attr != null && attr.ignore()) {
             return null;
         }
+        if (ve.getModifiers().contains(Modifier.STATIC)) {
+            return null;
+        }
 
         InnerFieldType ift = createInnerFieldType(ve.asType(), attr);
-
-        // System.out.print("\t" + ve.getSimpleName());
-//        if (ift != null) {
-//            System.out.print("\t" + ift.accessor);
-//        }
-//        System.out.println();
-
         if (ift != null) {
             FieldEntry fe = new FieldEntry();
             fe.origName = String.valueOf(ve.getSimpleName());
@@ -331,6 +342,7 @@ class DataModelProcessor {
                     String.valueOf(fe.origName));
             fe.accessor = ift.accessor;
             fe.primitiveType = ift.primitiveType;
+            fe.isNumber = ift.isNumber;
             if (attr != null) {
                 fe.forContentResolver = attr.forContentResolver();
                 fe.forDb = attr.forDb();
@@ -340,7 +352,13 @@ class DataModelProcessor {
             }
             return fe;
         } else {
-            return null;
+			processingEnv
+					.getMessager()
+					.printMessage(
+							Kind.ERROR,
+							"Data type is not supported. set ignore=true, or use custom IAccessor",
+							ve);
+			return null;
         }
     }
 
@@ -528,30 +546,6 @@ class DataModelProcessor {
             return name.substring(0, 1).toUpperCase() + name.substring(1);
         } else {
             return name.substring(0, 1).toLowerCase() + name.substring(1);
-        }
-    }
-
-    private static String getResourceAsString(String resourceName) throws IOException {
-        InputStream in = null;
-        try {
-            in = DataModelProcessor.class.getClassLoader().getResourceAsStream(resourceName);
-            Reader reader = new InputStreamReader(in, "UTF-8");
-            StringBuilder sb = new StringBuilder();
-            char[] cbuf = new char[1 << 12];
-            int r;
-            while ((r = reader.read(cbuf)) > 0) {
-                sb.append(cbuf, 0, r);
-            }
-
-            return sb.toString();
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e2) {
-                    // ignore
-                }
-            }
         }
     }
 }
