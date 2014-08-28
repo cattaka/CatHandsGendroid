@@ -2,15 +2,18 @@
 package net.cattaka.util.cathandsgendroid.apt;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -25,11 +28,14 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
+
+import org.mvel2.templates.TemplateRuntime;
 
 import net.cattaka.util.cathandsgendroid.annotation.AsyncInterface;
 import net.cattaka.util.cathandsgendroid.annotation.AsyncInterfaceAttrs;
@@ -38,14 +44,14 @@ import net.cattaka.util.cathandsgendroid.apt.util.ResourceUtil;
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 @SupportedAnnotationTypes("net.cattaka.util.genasyncif.*")
 public class AsycInterfaceProcessor {
-    private static class ArgType {
-        String typeName;
+	public static class ArgType {
+		public String typeName;
 
-        String innerTypeName;
+		public String innerTypeName;
 
-        String hiddenTypeName;
+		public String hiddenTypeName;
 
-        boolean isGenerics;
+		public boolean isGenerics;
 
         private ArgType(String typeName, String innerTypeName) {
             super();
@@ -124,20 +130,20 @@ public class AsycInterfaceProcessor {
 
     }
 
-    private static class MethodInfo {
-        boolean needSync;
+    public static class MethodInfo {
+    	public boolean needSync;
 
-        String methodName;
+    	public String methodName;
 
-        String genericsDeclare;
+    	public String genericsDeclare;
 
-        String eventName;
+    	public String eventName;
 
-        List<ArgType> argTypes;
+    	public List<ArgType> argTypes;
 
-        List<String> throwsList;
+    	public List<String> throwsList;
 
-        ArgType returnType;
+    	public ArgType returnType;
 
         public MethodInfo(boolean needSync, String methodName, String genericsDeclare,
                 String eventName, List<ArgType> argTypes, List<String> throwsList,
@@ -208,10 +214,9 @@ public class AsycInterfaceProcessor {
         }
     }
 
-    public void process(TypeElement srcElement, RoundEnvironment roundEnv) {
-        AsyncInterface gai = srcElement.getAnnotation(AsyncInterface.class);
-        String packageName = getPackageName(srcElement);
-        List<? extends TypeParameterElement> typeParameters = srcElement.getTypeParameters();
+    public void process(TypeElement element, RoundEnvironment roundEnv) {
+        AsyncInterface gai = element.getAnnotation(AsyncInterface.class);
+        List<? extends TypeParameterElement> typeParameters = element.getTypeParameters();
         String fullGenerics = "";
         String shortGenerics = "";
         if (typeParameters.size() > 0) {
@@ -219,36 +224,19 @@ public class AsycInterfaceProcessor {
             shortGenerics = createGenericsDeclare(typeParameters, false);
 
         }
-        String interfaceName = String.valueOf(srcElement.getSimpleName());
-        String asyncClassName = gai.prefix() + srcElement.getSimpleName() + gai.suffix();
-        String qualifiedName = packageName + ".async." + asyncClassName;
 
-        InterfaceInfo interfaceInfo = new InterfaceInfo(packageName, interfaceName, asyncClassName,
-                fullGenerics, shortGenerics);
-
-        Filer filer = processingEnv.getFiler();
-        PrintWriter writer = null;
-        try {
-            JavaFileObject fileObject = filer.createSourceFile(qualifiedName, srcElement);
-            writer = new PrintWriter(fileObject.openWriter());
-            generateCode(gai, srcElement, writer, interfaceInfo);
-        } catch (IOException e) {
-            processingEnv.getMessager().printMessage(Kind.ERROR, e.getMessage(), srcElement);
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
+        String packageName;
+        {
+            String t = String.valueOf(element.getQualifiedName());
+            int n = t.lastIndexOf('.');
+            packageName = (n >= 0) ? t.substring(0, n) : "";
         }
-
-    }
-
-    private void generateCode(AsyncInterface gai, TypeElement srcElement, PrintWriter writer,
-            InterfaceInfo info) throws IOException {
-        List<MethodInfo> methodInfos = pullMethodInfos(srcElement);
-        String packageName = info.packageName + ".async";
-        String importLines = "import " + info.packageName + "." + info.interfaceName + ";";
-        String asyncClassName = info.asyncClassName;
-        String interfaceName = info.interfaceName;
+        String interfaceName = String.valueOf(element.getSimpleName());
+        String asyncClassName = gai.prefix() + interfaceName + gai.suffix();
+        InterfaceInfo info = new InterfaceInfo(packageName, interfaceName, asyncClassName,
+                fullGenerics, shortGenerics);
+        List<MethodInfo> methodInfos = pullMethodInfos(element);
+        Set<String> importClasses = new TreeSet<String>();
         String methodEventLines = "";
         String suppressWarnings = "";
 
@@ -260,8 +248,9 @@ public class AsycInterfaceProcessor {
                     break;
                 }
             }
+            importClasses.add(info.packageName + "." + info.interfaceName);
             if (useAsyncInterfaceException) {
-                importLines += "\nimport net.cattaka.util.cathandsgendroid.exception.AsyncInterfaceException;";
+            	importClasses.add("net.cattaka.util.cathandsgendroid.exception.AsyncInterfaceException");
             }
         }
         {
@@ -299,167 +288,52 @@ public class AsycInterfaceProcessor {
             }
         }
 
-        for (int i = 0; i < methodInfos.size(); i++) {
-            MethodInfo mi = methodInfos.get(i);
-            methodEventLines += "    private static final int " + mi.eventName
-                    + " = EVENT_START + " + i + ";\n";
-        }
-        String methodLines;
         int workSize = 0;
         {
-            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < methodInfos.size(); i++) {
                 MethodInfo mi = methodInfos.get(i);
                 workSize = Math.max(workSize, mi.argTypes.size() + 4);
-                sb.append("    @Override\n");
-                sb.append("    public " + mi.genericsDeclare + mi.returnType.typeName + " "
-                        + mi.methodName + "(");
-                for (int j = 0; j < mi.argTypes.size(); j++) {
-                    ArgType arg = mi.argTypes.get(j);
-                    if (j > 0) {
-                        sb.append(", ");
-                    }
-                    sb.append(arg.typeName + " arg" + j);
-                }
-                sb.append(")");
-                if (mi.throwsList.size() > 0) {
-                    sb.append(" throws ");
-                    for (int j = 0; j < mi.throwsList.size(); j++) {
-                        if (j > 0) {
-                            sb.append(", ");
-                        }
-                        sb.append(mi.throwsList.get(0));
-                    }
-
-                }
-                sb.append(" {\n");
-                sb.append("        Object[] work = obtain();\n");
-                sb.append("        work[0] = this;\n");
-                sb.append("        work[1] = orig;\n");
-                for (int j = 0; j < mi.argTypes.size(); j++) {
-                    // ArgType arg = mi.argTypes.get(j);
-                    sb.append("        work[" + (j + 2) + "] = arg" + j + ";\n");
-                }
-                if (!mi.needSync) {
-                    sb.append("        mHandler.obtainMessage(" + mi.eventName
-                            + ", work).sendToTarget();\n");
-                } else {
-                    sb.append("        synchronized (work) {\n");
-                    sb.append("            mHandler.obtainMessage(" + mi.eventName + ", work)\n");
-                    sb.append("                    .sendToTarget();\n");
-                    sb.append("            try {\n");
-                    sb.append("                work.wait();\n");
-                    sb.append("            } catch (InterruptedException e) {\n");
-                    sb.append("                throw new AsyncInterfaceException(e);\n");
-                    sb.append("            }\n");
-                    sb.append("        }\n");
-                    sb.append("        if (work[WORK_SIZE - 1] != null) {\n");
-                    if (mi.throwsList.size() == 0) {
-                        sb.append("            throw new AsyncInterfaceException((Exception) work[WORK_SIZE - 1]);\n");
-                    } else {
-                        for (int j = 0; j < mi.throwsList.size(); j++) {
-                            String t = mi.throwsList.get(j);
-                            sb.append("            ");
-                            if (j > 0) {
-                                sb.append("} else ");
-                            }
-                            sb.append("if (work[WORK_SIZE - 1] instanceof " + t + ") {\n");
-                            sb.append("                throw (" + t + ") work[WORK_SIZE - 1];\n");
-                        }
-                        sb.append("            } else {\n");
-                        sb.append("                throw new AsyncInterfaceException((Exception) work[WORK_SIZE - 1]);\n");
-                        sb.append("            }\n");
-                    }
-                    sb.append("        }\n");
-                    if (!"void".equalsIgnoreCase(mi.returnType.typeName)) {
-                        if (mi.returnType.isGenerics) {
-                            sb.append("        @SuppressWarnings(\"unchecked\")\n");
-                        }
-                        sb.append("        " + mi.returnType.typeName + " result = ("
-                                + mi.returnType.innerTypeName + ") work[WORK_SIZE - 2];\n");
-                    }
-                    sb.append("        recycle(work);\n");
-                    if (!"void".equalsIgnoreCase(mi.returnType.typeName)) {
-                        sb.append("        return result;\n");
-                    }
-                }
-                sb.append("    }\n");
             }
-            methodLines = sb.toString();
         }
-        String caseLines;
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("annotation", gai);
+        map.put("importClasses", importClasses);
+        map.put("methodInfos", methodInfos);
+        map.put("methodEventLines", methodEventLines);
+        map.put("packageName", packageName);
+        map.put("asyncClassName", asyncClassName);
+        map.put("interfaceName", interfaceName);
+        map.put("fullGenerics", info.fullGenerics);
+        map.put("shortGenerics", info.shortGenerics);
+        map.put("poolSize", String.valueOf(gai.poolSize()));
+        map.put("suppressWarnings", suppressWarnings);
+        map.put("workSize", String.valueOf(workSize));
+
+        String generated = (String)TemplateRuntime.eval(mTemplate, map);
         {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < methodInfos.size(); i++) {
-                MethodInfo mi = methodInfos.get(i);
-                sb.append("            case " + mi.eventName + ": {\n");
-                sb.append("                Object[] work = (Object[]) msg.obj;\n");
-                if (!mi.needSync) {
-                    sb.append("                ${asyncClassName} me = (${asyncClassName}) work[0];\n");
+            String qualifiedName = ((packageName.length() > 0) ? packageName + "." : "")
+                    + asyncClassName;
+            Filer filer = processingEnv.getFiler();
+            Writer writer = null;
+            try {
+                JavaFileObject fileObject = filer.createSourceFile(qualifiedName, element);
+                writer = fileObject.openWriter();
+                writer.write(generated);
+            } catch (IOException e) {
+                Messager messager = processingEnv.getMessager();
+                messager.printMessage(Kind.ERROR, e.getMessage(), element);
+            } finally {
+                if (writer != null) {
+                    try {
+                        writer.close();
+                    } catch (IOException e2) {
+                        Messager messager = processingEnv.getMessager();
+                        messager.printMessage(Kind.ERROR, e2.getMessage(), element);
+                    }
                 }
-                sb.append("                ${interfaceName} orig = (${interfaceName}) work[1];\n");
-                for (int j = 0; j < mi.argTypes.size(); j++) {
-                    ArgType arg = mi.argTypes.get(j);
-                    sb.append("                " + arg.hiddenTypeName + " arg" + j + " = ("
-                            + arg.hiddenTypeName + ") (work[" + (j + 2) + "]);\n");
-                }
-
-                if (!mi.needSync) {
-                    sb.append("                orig." + mi.methodName + "(");
-                    for (int j = 0; j < mi.argTypes.size(); j++) {
-                        if (j > 0) {
-                            sb.append(" ,");
-                        }
-                        sb.append("arg" + j);
-                    }
-                    sb.append(");\n");
-                    sb.append("                me.recycle(work);\n");
-                    sb.append("                return true;\n");
-                } else {
-                    sb.append("                try {\n");
-                    sb.append("                    ");
-                    if (!"void".equalsIgnoreCase(mi.returnType.typeName)) {
-                        sb.append("Object result = ");
-                    }
-                    sb.append("orig." + mi.methodName + "(");
-                    for (int j = 0; j < mi.argTypes.size(); j++) {
-                        if (j > 0) {
-                            sb.append(" ,");
-                        }
-                        sb.append("arg" + j);
-                    }
-                    sb.append(");\n");
-                    if (!"void".equalsIgnoreCase(mi.returnType.typeName)) {
-                        sb.append("                    work[WORK_SIZE - 2] = result;\n");
-                    }
-                    sb.append("                } catch (Exception e) {\n");
-                    sb.append("                    work[WORK_SIZE - 1] = e;\n");
-                    sb.append("                }\n");
-                    sb.append("                synchronized (work) {\n");
-                    sb.append("                    work.notify();\n");
-                    sb.append("                }\n");
-                    sb.append("                return true;\n");
-                }
-                sb.append("            }\n");
             }
-            caseLines = sb.toString();
         }
-
-        StringBuilder sb = new StringBuilder(mTemplate);
-        replaceStringBuilder(sb, "${importLines}", importLines);
-        replaceStringBuilder(sb, "${caseLines}", caseLines);
-        replaceStringBuilder(sb, "${methodEventLines}", methodEventLines);
-        replaceStringBuilder(sb, "${methodLines}", methodLines);
-        replaceStringBuilder(sb, "${packageName}", packageName);
-        replaceStringBuilder(sb, "${asyncClassName}", asyncClassName);
-        replaceStringBuilder(sb, "${interfaceName}", interfaceName);
-        replaceStringBuilder(sb, "${fullGenerics}", info.fullGenerics);
-        replaceStringBuilder(sb, "${shortGenerics}", info.shortGenerics);
-        replaceStringBuilder(sb, "${poolSize}", String.valueOf(gai.poolSize()));
-        replaceStringBuilder(sb, "${suppressWarnings}", suppressWarnings);
-        replaceStringBuilder(sb, "${workSize}", String.valueOf(workSize));
-
-        writer.print(sb.toString());
     }
 
     public static List<MethodInfo> pullMethodInfos(TypeElement rootElement) {
@@ -629,13 +503,12 @@ public class AsycInterfaceProcessor {
     }
 
     private static String pickQualifiedName(TypeMirror src) {
-        if (src instanceof PrimitiveType) {
-            return ((PrimitiveType)src).getKind().name().toLowerCase();
-        } else if (src instanceof ArrayType) {
+    	if (src.getKind() == TypeKind.DECLARED) {
+    		return String.valueOf(((TypeElement)((DeclaredType)src).asElement()).getQualifiedName());
+        } else if (src.getKind() == TypeKind.ARRAY) {
             return pickQualifiedName(((ArrayType)src).getComponentType()) + "[]";
-        } else if (src instanceof DeclaredType) {
-            Element element = ((DeclaredType)src).asElement();
-            return getPackageName(element) + "." + String.valueOf(element.getSimpleName());
+    	} else if (src instanceof PrimitiveType) {
+            return ((PrimitiveType)src).getKind().name().toLowerCase();
         }
         return null;
     }
@@ -645,17 +518,5 @@ public class AsycInterfaceProcessor {
             element = element.getEnclosingElement();
         }
         return ((PackageElement)element).getQualifiedName().toString();
-    }
-
-    private static void replaceStringBuilder(StringBuilder sb, String target, String replacement) {
-        int start = 0;
-        while (true) {
-            start = sb.indexOf(target, start);
-            if (start >= 0) {
-                sb.replace(start, start + target.length(), replacement);
-            } else {
-                break;
-            }
-        }
     }
 }

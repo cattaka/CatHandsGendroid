@@ -7,21 +7,51 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Handler.Callback;
-${importLines}
+@foreach{importClass:importClasses}
+import @{importClass};@end{}
 
 public class ${asyncClassName}${fullGenerics} implements ${interfaceName}${shortGenerics} {
     private static final int WORK_SIZE = ${workSize};
     private static final int POOL_SIZE = ${poolSize};
     private static final int EVENT_START = 1;
 
-${methodEventLines}
+@code{count=1}@foreach{mi:methodInfos}
+    private static final int ${mi.eventName} = EVENT_START + ${count};$code{count++}@end{}
 
     private static Callback sCallback = new Callback() {
 ${suppressWarnings}
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-${caseLines}
+@foreach{mi:methodInfos}
+                case ${mi.eventName}: {
+                    Object[] work = (Object[]) msg.obj;
+@if{!mi.needSync}
+                    ${asyncClassName} me = (${asyncClassName}) work[0];@end{}
+                    ${interfaceName} orig = (${interfaceName}) work[1];
+@code{count=0}@foreach{arg:mi.argTypes}
+                    ${arg.hiddenTypeName} arg${count} = (${arg.hiddenTypeName}) (work[${count}+2]);@code{count++}@end{}
+@if{!mi.needSync}
+                    orig.${mi.methodName}(@code{count=0}@foreach{arg:mi.argTypes}@if{count > 0} ,@end{}arg@{count++}@end{});
+                    me.recycle(work);
+                    return true;
+@else{}@comment{!mi.needSync}
+                    try {
+@if{"void".equalsIgnoreCase(mi.returnType.typeName) == false}
+                        Object result = @end{}
+                        orig.@{mi.methodName}(@code{count=0}@foreach{arg:mi.argTypes}@if{count > 0} ,@end{}arg@{count++}@end{});
+@if{"void".equalsIgnoreCase(mi.returnType.typeName) == false}
+                        work[WORK_SIZE - 2] = result;@end{}
+                    } catch (Exception e) {
+                        work[WORK_SIZE - 1] = e;
+                    }
+                    synchronized (work) {
+                        work.notify();
+                    }
+                    return true;
+@end{}@comment{!mi.needSync}
+                }
+@end{}@comment{mi:methodInfos}
             }
             return false;
         }
@@ -48,7 +78,69 @@ ${caseLines}
     }
 
 
-${methodLines}
+@foreach{mi:methodInfos}
+    @Override
+    public @{mi.genericsDeclare} ${mi.returnType.typeName} ${mi.methodName}(@comment{
+}@code{count=0}@foreach{arg:mi.argTypes}@if{count>0}, @end{}@{arg.typeName} arg${count++}@end{}) 
+@if{mi.throwsList.size() > 0}
+            throws
+@code{count=0}@foreach{t:mi.throwsList}
+        @if{count>0}, @end{}@{t}$code{count++}@end{}
+@end{}@comment{mi.throwsList.size() > 0}
+    {
+    	if (Looper.myLooper() == mHandler.getLooper()) {
+@if{"void".equalsIgnoreCase(mi.returnType.typeName) == false}
+    		return orig.${mi.methodName}(@comment{
+                }@code{count=0}@foreach{arg:mi.argTypes}@if{count>0}, @end{}arg${count++}@end{});
+@else{}@comment{"void".equalsIgnoreCase(mi.returnType.typeName) == false}
+    		orig.${mi.methodName}(@comment{
+                }@code{count=0}@foreach{arg:mi.argTypes}@if{count>0}, @end{}arg${count++}@end{});
+            return;
+@end{}@comment{"void".equalsIgnoreCase(mi.returnType.typeName) == false}
+    	}
+        Object[] work = obtain();
+        work[0] = this;
+        work[1] = orig;
+@code{count=0}@foreach{arg:mi.argTypes}
+        work[${count}+2] = arg@{count};$code{count++}@end{}
+@if{!mi.needSync}
+        mHandler.obtainMessage(@{mi.eventName}, work).sendToTarget();
+@else{}@comment{!mi.needSync}
+        synchronized (work) {
+            mHandler.obtainMessage(@{mi.eventName}, work)
+                    .sendToTarget();
+            try {
+                work.wait();
+            } catch (InterruptedException e) {
+                throw new AsyncInterfaceException(e);
+            }
+        }
+        if (work[WORK_SIZE - 1] != null) {
+@if{mi.throwsList.size() == 0}
+            throw new AsyncInterfaceException((Exception) work[WORK_SIZE - 1]);
+@else{}@comment{mi.throwsList.size() == 0}
+@code{count=0}@foreach{t:mi.throwsList}
+            @if{count>0}} else @end{}
+            if (work[WORK_SIZE - 1] instanceof ${t}) {
+                throw (${t}) work[WORK_SIZE - 1];
+@end{}
+            } else {
+                throw new AsyncInterfaceException((Exception) work[WORK_SIZE - 1]);
+            }
+@end{}@comment{mi.throwsList.size() == 0}
+        }
+@if{"void".equalsIgnoreCase(mi.returnType.typeName) == false}
+@if{mi.returnType.isGenerics}
+        @SuppressWarnings("unchecked")@end{}
+        @{mi.returnType.typeName} result = (@{mi.returnType.innerTypeName}) work[WORK_SIZE - 2];
+        recycle(work);
+@end{}@comment{"void".equalsIgnoreCase(mi.returnType.typeName) == false}
+@if{"void".equalsIgnoreCase(mi.returnType.typeName) == false}
+        return result;
+@end{}@comment{"void".equalsIgnoreCase(mi.returnType.typeName) == false}
+@end{}@comment{!mi.needSync}
+    }
+@end{}@comment{mi:methodInfos}
 
     private Object[] obtain() {
         final Object[][] pool = sOwnedPool;
@@ -66,6 +158,9 @@ ${methodLines}
     }
 
     private void recycle(Object[] p) {
+    	for (int i=0;i<p.length;i++) {
+    		p[i] = null;
+    	}
         final Object[][] pool = sOwnedPool;
         synchronized (pool) {
             for (int i = 0; i < POOL_SIZE; i++) {
