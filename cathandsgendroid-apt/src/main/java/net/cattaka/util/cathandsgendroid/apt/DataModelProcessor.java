@@ -147,15 +147,17 @@ class DataModelProcessor {
 	                }
 	            }
 	        }
-	        if (primaryKeyCount == 0) {
-	            processingEnv.getMessager().printMessage(Kind.ERROR, "At least one primary key is required. put @Attribute(primaryKey=true) to field of key", element);
-	        } else if (primaryKeyCount > 1) {
-	            processingEnv.getMessager().printMessage(Kind.ERROR, "Only single primary key is supported.", element);
-	        } else {
-		        if (annotation.autoincrement() && !primaryKey.isNumber) {
-		        	processingEnv.getMessager().printMessage(Kind.ERROR,
-	                        "use autoincrement=false, or use number type.", element);
-	            }
+	        if (annotation.genDbFunc()) {
+    	        if (primaryKeyCount == 0) {
+    	            processingEnv.getMessager().printMessage(Kind.ERROR, "At least one primary key is required. put @Attribute(primaryKey=true) to field of key", element);
+    	        } else if (primaryKeyCount > 1) {
+    	            processingEnv.getMessager().printMessage(Kind.ERROR, "Only single primary key is supported.", element);
+    	        } else {
+    		        if (annotation.autoincrement() && !primaryKey.isNumber) {
+    		        	processingEnv.getMessager().printMessage(Kind.ERROR,
+    	                        "use autoincrement=false, or use number type.", element);
+    	            }
+    	        }
 	        }
 	    }
 
