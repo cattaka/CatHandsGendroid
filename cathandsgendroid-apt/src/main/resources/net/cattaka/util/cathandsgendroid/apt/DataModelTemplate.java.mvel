@@ -30,7 +30,7 @@ public class @{genClassName} {
     }
 
 @if{annotation.genDbFunc() || annotation.genContentResolverFunc()}
-    public static final String SQL_CREATE_TABLE = "CREATE TABLE ${tableName}(@code{counter = 0}@foreach{fieldEntry : fieldEntries}@{(counter++>0)?",":""}@{fieldEntry.columnName} @{fieldEntry.dbDataType}@{fieldEntry.primaryKey ? " PRIMARY KEY"+(annotation.autoincrement()?" AUTOINCREMENT":""):""}@end{})";
+    public static final String SQL_CREATE_TABLE = "CREATE TABLE ${tableName}(@code{counter = 0}@foreach{fieldEntry : dbFieldEntries}@{(counter++>0)?",":""}@{fieldEntry.columnName} @{fieldEntry.dbDataType}@{fieldEntry.primaryKey ? " PRIMARY KEY"+(annotation.autoincrement()?" AUTOINCREMENT":""):""}@end{})";
 @if{findEntriesPerVersions.size()>0}@code{counter=0;lastVersion=0;}@foreach{item:findEntriesPerVersions}@if{counter++>0}
     public static final String[] SQL_ALTER_TABLE_@{lastVersion}_TO_@{item.version} = new String[] {
 @foreach{fieldEntry:item.fieldEntries}
@@ -49,15 +49,15 @@ public class @{genClassName} {
     };
 
     public static final String TABLE_NAME = "@{tableName}";
-    public static final String COLUMNS = "@code{counter = 0}@foreach{fieldEntry : fieldEntries}@{(counter++>0)?",":""}@{fieldEntry.columnName}@end{}";
-    public static final String[] COLUMNS_ARRAY = new String[] {@code{counter = 0}@foreach{fieldEntry : fieldEntries}@{(counter++>0)?",":""}"@{fieldEntry.columnName}"@end{}};
-@code{counter = 0}@foreach{fieldEntry : fieldEntries}
+    public static final String COLUMNS = "@code{counter = 0}@foreach{fieldEntry : dbFieldEntries}@{(counter++>0)?",":""}@{fieldEntry.columnName}@end{}";
+    public static final String[] COLUMNS_ARRAY = new String[] {@code{counter = 0}@foreach{fieldEntry : dbFieldEntries}@{(counter++>0)?",":""}"@{fieldEntry.columnName}"@end{}};
+@code{counter = 0}@foreach{fieldEntry : dbFieldEntries}
     public static final int COL_INDEX_@{fieldEntry.compositeName} = @{counter++};@end{}
-@code{counter = 0}@foreach{fieldEntry : fieldEntries}
+@code{counter = 0}@foreach{fieldEntry : dbFieldEntries}
     public static final String COL_NAME_@{fieldEntry.compositeName} = "@{fieldEntry.columnName}";@end{}
 
     public static void readCursorByIndex(Cursor cursor, @{className} dest) {
-@code{counter = 0}@foreach{fieldEntry : fieldEntries}
+@code{counter = 0}@foreach{fieldEntry : dbFieldEntries}
 @if{fieldEntry.primitiveType}        { @{fieldEntry.javaDataType} v = ACCESSOR_@{fieldEntry.compositeName}.readFromCursor(cursor,${counter++}); if (v != null) dest.@{fieldEntry.setter}(v); }@comment{
 }@else{}        dest.@{fieldEntry.setter}(ACCESSOR_@{fieldEntry.compositeName}.readFromCursor(cursor,${counter++}));@comment{
 }@end{}@end{}
@@ -70,7 +70,7 @@ public class @{genClassName} {
     }
     public static void readCursorByName(Cursor cursor, @{className} dest) {
         int idx;
-@foreach{fieldEntry : fieldEntries}
+@foreach{fieldEntry : dbFieldEntries}
         idx = cursor.getColumnIndex("${fieldEntry.columnName}");
 @if{fieldEntry.primitiveType}        { @{fieldEntry.javaDataType} v = ACCESSOR_@{fieldEntry.compositeName}.readFromCursor(cursor,idx); if (v != null) dest.@{fieldEntry.setter}(v); }@comment{
 }@else{}        dest.@{fieldEntry.setter}(ACCESSOR_@{fieldEntry.compositeName}.readFromCursor(cursor,idx));@comment{
@@ -85,7 +85,7 @@ public class @{genClassName} {
         if (withPrimaryKey) {
             ACCESSOR_@{?primaryKey.compositeName}.putToContentValues(dest, "@{?primaryKey.columnName}", model.@{?primaryKey.getter}());
         }
-@foreach{fieldEntry : fieldEntries}@if{!fieldEntry.primaryKey}
+@foreach{fieldEntry : dbFieldEntries}@if{!fieldEntry.primaryKey}
         ACCESSOR_@{fieldEntry.compositeName}.putToContentValues(dest, "@{fieldEntry.columnName}", model.@{fieldEntry.getter}());@end{}@end{}
     }
 
@@ -281,11 +281,11 @@ public class @{genClassName} {
         }
     };
     public static void readFromParcel(@{className} dest, android.os.Parcel in) {
-@foreach{fieldEntry : fieldEntries}@if{!fieldEntry.primaryKey}
+@foreach{fieldEntry : parcelFieldEntries}@if{!fieldEntry.primaryKey}
         dest.@{fieldEntry.setter}(ACCESSOR_@{fieldEntry.compositeName}.readFromParcel(in));@end{}@end{}
     }
     public static void writeToParcel(@{className} src, android.os.Parcel out, int flags) {
-@foreach{fieldEntry : fieldEntries}@if{!fieldEntry.primaryKey}
+@foreach{fieldEntry : parcelFieldEntries}@if{!fieldEntry.primaryKey}
         ACCESSOR_@{fieldEntry.compositeName}.writeToParcel(out, src.@{fieldEntry.getter}());@end{}@end{}
     }
 @end{}

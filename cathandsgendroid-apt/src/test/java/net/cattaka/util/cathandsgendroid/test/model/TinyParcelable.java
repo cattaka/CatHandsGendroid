@@ -7,7 +7,7 @@ import android.os.Parcelable;
 
 @DataModel(genParcelFunc=true, genDbFunc=false)
 public class TinyParcelable implements Parcelable {
-    public static final android.os.Parcelable.Creator<TinyParcelable> CREATOR = TinyParcelableCatHands.CREATOR;
+    public static final Creator<TinyParcelable> CREATOR = TinyParcelableCatHands.CREATOR;
     
     public int describeContents() {
         return 0;
@@ -25,11 +25,11 @@ public class TinyParcelable implements Parcelable {
     
     
     public TinyParcelable(int data) {
-		super();
-		this.data = data;
-	}
+        super();
+        this.data = data;
+    }
 
-	public int getData() {
+    public int getData() {
         return data;
     }
 
