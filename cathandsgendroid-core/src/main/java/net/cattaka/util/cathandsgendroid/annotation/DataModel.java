@@ -1,6 +1,8 @@
 
 package net.cattaka.util.cathandsgendroid.annotation;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -123,4 +125,10 @@ public @interface DataModel {
      */
     boolean genContentResolverFunc() default false;
 
+    /**
+     * Specify whether this is used for {@link DataOutputStream} and {@link DataInputStream}.
+     * 
+     * @return If true methods for DB are generated.
+     */
+    boolean genDsFunc() default false;
 }

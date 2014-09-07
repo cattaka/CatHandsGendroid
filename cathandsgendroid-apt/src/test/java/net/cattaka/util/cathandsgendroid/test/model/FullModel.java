@@ -18,7 +18,7 @@ import android.os.Parcelable;
         "pLongValue", "pShortValue",
         // "serializable",
         "shortValue", "stringValue", "tinyEnum"
-}, genDbFunc = true, genParcelFunc = true, genContentResolverFunc = true, autoincrement = true)
+}, genDbFunc = true, genParcelFunc = true, genContentResolverFunc = true, genDsFunc = true, autoincrement = true)
 public class FullModel implements Parcelable {
     @Override
     public int describeContents() {
@@ -30,17 +30,7 @@ public class FullModel implements Parcelable {
         FullModelCatHands.writeToParcel(this, dest, flags);
     }
 
-    public static final Parcelable.Creator<FullModel> CREATOR = new Parcelable.Creator<FullModel>() {
-        public FullModel createFromParcel(Parcel in) {
-            FullModel model = new FullModel();
-            FullModelCatHands.readFromParcel(model, in);
-            return model;
-        }
-
-        public FullModel[] newArray(int size) {
-            return new FullModel[size];
-        }
-    };
+    public static final Parcelable.Creator<FullModel> CREATOR = FullModelCatHands.CREATOR;
 
     public FullModel() {
     }

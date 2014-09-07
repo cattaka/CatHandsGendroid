@@ -1,6 +1,8 @@
 
 package net.cattaka.util.cathandsgendroid.annotation;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -44,6 +46,13 @@ public @interface DataModelAttrs {
      * @return If true this is used for ContentResolver.
      */
     boolean forContentResolver() default true;
+
+    /**
+     * Specify whether this field is used for {@link DataOutputStream} and {@link DataInputStream}.
+     * 
+     * @return If true this is used for DB.
+     */
+    boolean forDs() default true;
 
     /**
      * Specify whether or not the primary key.
