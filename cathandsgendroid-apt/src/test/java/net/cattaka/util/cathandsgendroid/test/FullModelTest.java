@@ -6,6 +6,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Date;
 
 import net.cattaka.util.cathandsgendroid.test.model.FullModel;
@@ -302,6 +307,122 @@ public class FullModelTest {
             parcel.setDataPosition(0);
             FullModel t = parcel.readParcelable(this.getClass().getClassLoader());
             parcel.recycle();
+            assertEquals(model.getBlobValue(), t.getBlobValue());
+            assertEquals(model.getBooleanValue(), t.getBooleanValue());
+            assertEquals(model.getByteValue(), t.getByteValue());
+            assertEquals(model.getCharacterValue(), t.getCharacterValue());
+            assertEquals(model.getDateValue(), t.getDateValue());
+            assertEquals(model.getDoubleValue(), t.getDoubleValue());
+            assertEquals(model.getFloatValue(), t.getFloatValue());
+            assertEquals(model.getIntegerValue(), t.getIntegerValue());
+            assertEquals(model.getKey(), t.getKey());
+            assertEquals(model.getLongValue(), t.getLongValue());
+            // Parcelable is out of support for DB.
+            // assertEquals(model.getParcelableValue(), t.getParcelableValue());
+            assertEquals(model.getPBooleanValue(), t.getPBooleanValue());
+            assertEquals(model.getPByteValue(), t.getPByteValue());
+            assertEquals(model.getPCharValue(), t.getPCharValue());
+            assertEquals(model.getPDoubleValue(), t.getPDoubleValue(), 0);
+            assertEquals(model.getPFloatValue(), t.getPFloatValue(), 0);
+            assertEquals(model.getPIntValue(), t.getPIntValue());
+            assertEquals(model.getPLongValue(), t.getPLongValue());
+            assertEquals(model.getPShortValue(), t.getPShortValue());
+            assertEquals(model.getSerializable(), t.getSerializable());
+            assertEquals(model.getShortValue(), t.getShortValue());
+            assertEquals(model.getStringValue(), t.getStringValue());
+            assertEquals(model.getTinyEnum(), t.getTinyEnum());
+        }
+    }
+
+    @Test
+    public void testDsFunc() throws IOException {
+        FullModel model = new FullModel();
+        { // create
+            model.setKey(567);
+            model.setBlobValue(new byte[] {
+                    1, 2, 3, 4
+            });
+            model.setBooleanValue(Boolean.TRUE);
+            model.setByteValue((byte)12);
+            model.setCharacterValue('C');
+            model.setDateValue(new Date());
+            model.setDoubleValue(12.34);
+            model.setFloatValue((float)56.78);
+            model.setIntegerValue(234);
+            model.setLongValue(987L);
+            // Parcelable is out of support for DB.
+            // model.setParcelableValue(new TinyParcelable(333));
+            model.setPBooleanValue(true);
+            model.setPByteValue((byte)13);
+            model.setPCharValue('B');
+            model.setPDoubleValue(43.21);
+            model.setPFloatValue((float)76.54);
+            model.setPIntValue(345);
+            model.setPLongValue(876L);
+            model.setPShortValue((short)132);
+            model.setSerializable(new TinySerializable(444));
+            model.setShortValue((short)243);
+            model.setStringValue("This is it");
+            model.setTinyEnum(TinyEnum.A);
+        }
+
+        byte[] data;
+        {
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            DataOutputStream dout = new DataOutputStream(bout);
+            FullModelCatHands.writeToDataOutputStream(model, dout);
+            dout.flush();
+            data = bout.toByteArray();
+        }
+        {
+            DataInputStream din = new DataInputStream(new ByteArrayInputStream(data));
+            FullModel t = new FullModel();
+            FullModelCatHands.readFromDataInputStream(t, din);
+            assertEqualsArray(model.getBlobValue(), t.getBlobValue());
+            assertEquals(model.getBooleanValue(), t.getBooleanValue());
+            assertEquals(model.getByteValue(), t.getByteValue());
+            assertEquals(model.getCharacterValue(), t.getCharacterValue());
+            assertEquals(model.getDateValue(), t.getDateValue());
+            assertEquals(model.getDoubleValue(), t.getDoubleValue());
+            assertEquals(model.getFloatValue(), t.getFloatValue());
+            assertEquals(model.getIntegerValue(), t.getIntegerValue());
+            assertEquals(model.getKey(), t.getKey());
+            assertEquals(model.getLongValue(), t.getLongValue());
+            // Parcelable is out of support for DB.
+            // assertEquals(model.getParcelableValue().getData(),
+            // t.getParcelableValue().getData());
+            assertEquals(model.getPBooleanValue(), t.getPBooleanValue());
+            assertEquals(model.getPByteValue(), t.getPByteValue());
+            assertEquals(model.getPCharValue(), t.getPCharValue());
+            assertEquals(model.getPDoubleValue(), t.getPDoubleValue(), 0);
+            assertEquals(model.getPFloatValue(), t.getPFloatValue(), 0);
+            assertEquals(model.getPIntValue(), t.getPIntValue());
+            assertEquals(model.getPLongValue(), t.getPLongValue());
+            assertEquals(model.getPShortValue(), t.getPShortValue());
+            assertEquals(model.getSerializable().getData(), t.getSerializable().getData());
+            assertEquals(model.getShortValue(), t.getShortValue());
+            assertEquals(model.getStringValue(), t.getStringValue());
+            assertEquals(model.getTinyEnum(), t.getTinyEnum());
+            assertEquals(-1, din.read());
+        }
+    }
+
+    @Test
+    public void testDsFunc_null() throws IOException {
+        FullModel model = new FullModel();
+
+        byte[] data;
+        {
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            DataOutputStream dout = new DataOutputStream(bout);
+            FullModelCatHands.writeToDataOutputStream(model, dout);
+            dout.flush();
+            data = bout.toByteArray();
+        }
+        {
+            DataInputStream din = new DataInputStream(new ByteArrayInputStream(data));
+            FullModel t = new FullModel();
+            FullModelCatHands.readFromDataInputStream(model, din);
             assertEquals(model.getBlobValue(), t.getBlobValue());
             assertEquals(model.getBooleanValue(), t.getBooleanValue());
             assertEquals(model.getByteValue(), t.getByteValue());

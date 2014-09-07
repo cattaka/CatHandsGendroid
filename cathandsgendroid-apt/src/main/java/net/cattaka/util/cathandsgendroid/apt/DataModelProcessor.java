@@ -73,6 +73,8 @@ class DataModelProcessor {
 
         public boolean forParcel = true;
 
+        public boolean forDs = true;
+
         public boolean primaryKey = false;
 
         public long version = 1;
@@ -210,12 +212,16 @@ class DataModelProcessor {
         
         List<FieldEntry> dbFieldEntries = new ArrayList<DataModelProcessor.FieldEntry>();
         List<FieldEntry> parcelFieldEntries = new ArrayList<DataModelProcessor.FieldEntry>();
+        List<FieldEntry> dsFieldEntries = new ArrayList<DataModelProcessor.FieldEntry>();
         for (FieldEntry fe : fieldEntries){
             if (fe.forDb) {
                 dbFieldEntries.add(fe);
             }
             if (fe.forParcel) {
                 parcelFieldEntries.add(fe);
+            }
+            if (fe.forDs) {
+                dsFieldEntries.add(fe);
             }
         }
 
@@ -236,6 +242,7 @@ class DataModelProcessor {
         map.put("fieldEntries", fieldEntries);
         map.put("dbFieldEntries", dbFieldEntries);
         map.put("parcelFieldEntries", parcelFieldEntries);
+        map.put("dsFieldEntries", dsFieldEntries);
         map.put("findEntries", findEntries);
         map.put("uniqueEntries", uniqueEntries);
         map.put("findEntriesPerVersions", findEntriesPerVersions);
@@ -363,6 +370,7 @@ class DataModelProcessor {
                 fe.forContentResolver = attr.forContentResolver();
                 fe.forDb = attr.forDb();
                 fe.forParcel = attr.forParcel();
+                fe.forDs = attr.forDs();
                 fe.primaryKey = attr.primaryKey();
                 fe.version = attr.version();
             }
