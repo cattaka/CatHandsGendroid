@@ -207,6 +207,18 @@ class DataModelProcessor {
             }
             findEntries.add(entry);
         }
+        
+        List<FieldEntry> dbFieldEntries = new ArrayList<DataModelProcessor.FieldEntry>();
+        List<FieldEntry> parcelFieldEntries = new ArrayList<DataModelProcessor.FieldEntry>();
+        for (FieldEntry fe : fieldEntries){
+            if (fe.forDb) {
+                dbFieldEntries.add(fe);
+            }
+            if (fe.forParcel) {
+                parcelFieldEntries.add(fe);
+            }
+        }
+
 
         Map<String, Object> map = new HashMap<String, Object>();
         String packageName;
@@ -222,6 +234,8 @@ class DataModelProcessor {
         map.put("className", className);
         map.put("genClassName", genClassName);
         map.put("fieldEntries", fieldEntries);
+        map.put("dbFieldEntries", dbFieldEntries);
+        map.put("parcelFieldEntries", parcelFieldEntries);
         map.put("findEntries", findEntries);
         map.put("uniqueEntries", uniqueEntries);
         map.put("findEntriesPerVersions", findEntriesPerVersions);
