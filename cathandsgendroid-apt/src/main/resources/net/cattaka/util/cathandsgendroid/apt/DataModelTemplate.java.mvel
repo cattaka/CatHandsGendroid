@@ -281,12 +281,26 @@ public class @{genClassName} {
         }
     };
     public static void readFromParcel(@{className} dest, android.os.Parcel in) {
-@foreach{fieldEntry : parcelFieldEntries}@if{!fieldEntry.primaryKey}
-        dest.@{fieldEntry.setter}(ACCESSOR_@{fieldEntry.compositeName}.readFromParcel(in));@end{}@end{}
+@foreach{fieldEntry : parcelFieldEntries}
+        dest.@{fieldEntry.setter}(ACCESSOR_@{fieldEntry.compositeName}.readFromParcel(in));@end{}
     }
     public static void writeToParcel(@{className} src, android.os.Parcel out, int flags) {
-@foreach{fieldEntry : parcelFieldEntries}@if{!fieldEntry.primaryKey}
-        ACCESSOR_@{fieldEntry.compositeName}.writeToParcel(out, src.@{fieldEntry.getter}());@end{}@end{}
+@foreach{fieldEntry : parcelFieldEntries}
+        ACCESSOR_@{fieldEntry.compositeName}.writeToParcel(out, src.@{fieldEntry.getter}());@end{}
+    }
+@end{}
+
+
+
+@comment{ ==== DsFunc ==== }
+@if{annotation.genParcelFunc()}
+    public static void readFromDataInputStream(@{className} dest, java.io.DataInputStream in) throws java.io.IOException {
+@foreach{fieldEntry : parcelFieldEntries}
+        dest.@{fieldEntry.setter}(ACCESSOR_@{fieldEntry.compositeName}.readFromStream(in));@end{}
+    }
+    public static void writeToDataOutputStream(@{className} src, java.io.DataOutputStream out) throws java.io.IOException {
+@foreach{fieldEntry : parcelFieldEntries}
+        ACCESSOR_@{fieldEntry.compositeName}.writeToStream(out, src.@{fieldEntry.getter}());@end{}
     }
 @end{}
 }
