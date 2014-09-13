@@ -415,7 +415,7 @@ CatHandsGendroid also have other function
 * Generate parcelable funcions, android.os.Parcelable.Creator CREATOR, readFromParcel and writeToParcel.
 * Interface wrapper, It provides when method of interface is called from non UIThread, it react from UIThread.
 
-# License
+## License
 ```
 Copyright 2011 Takao Sumitomo
 
