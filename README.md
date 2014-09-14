@@ -9,6 +9,10 @@ This provide follow utility classes.
 * Generate DB, Parcel utility classes.
 * Generate Utility classes for handler
 
+## Documents
+
+[Please look at Wiki](https://github.com/cattaka/CatHandsGendroid/wiki)
+
 ## Generate DB, Parcel utility classes.
 When you have following class, it has @DataModel and @DataModelAttr annotations.
 ```java
