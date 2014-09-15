@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -105,6 +106,13 @@ class DataModelProcessor {
         public List<OrderByEntry> orderBy;
 
         public boolean unique;
+    }
+
+    public static class QueryEntry {
+        public String name;
+        public String query;
+        public List<String> args;
+        public List<FieldEntry> columns;
     }
 
     public static class FindEntriesPerVersion implements Comparable<FindEntriesPerVersion> {
@@ -224,6 +232,18 @@ class DataModelProcessor {
                 dsFieldEntries.add(fe);
             }
         }
+        
+        List<QueryEntry> queryEntries = new ArrayList<DataModelProcessor.QueryEntry>();
+        for (String query : annotation.query()) {
+            QueryEntry entry = createQueryEntry(processingEnv, element, query, columnName2FieldEntry);
+            entry.args = new ArrayList<String>();
+            int j = -1;
+            int n = 0;
+            while ((j = entry.query.indexOf("?", j+1)) >= 0) {
+                entry.args.add("arg" + (n++));
+            }
+            queryEntries.add(entry);
+        }
 
 
         Map<String, Object> map = new HashMap<String, Object>();
@@ -245,6 +265,7 @@ class DataModelProcessor {
         map.put("dsFieldEntries", dsFieldEntries);
         map.put("findEntries", findEntries);
         map.put("uniqueEntries", uniqueEntries);
+        map.put("queryEntries", queryEntries);
         map.put("findEntriesPerVersions", findEntriesPerVersions);
         map.put("importClasses", importClasses);
         if (primaryKey != null) {
@@ -337,6 +358,38 @@ class DataModelProcessor {
             }
         }
         return orderByEntries;
+    }
+
+    private static QueryEntry createQueryEntry(ProcessingEnvironment env, Element element,
+            String query, Map<String, FieldEntry> columnName2FieldEntry) {
+        QueryEntry entry = new QueryEntry();
+        entry.columns = new ArrayList<DataModelProcessor.FieldEntry>();
+        String[] tmps = query.split(":",2);
+        List<String> colmuns;
+        if (tmps.length != 2) {
+            Messager messager = env.getMessager();
+            messager.printMessage(Kind.ERROR, "Syntax error on '" + query + "'. This must be '<name>:<query>'",
+                    element);
+            colmuns = new ArrayList<String>();
+            entry.query = "";
+        } else {
+            colmuns = pickUpColumns(tmps[1]);
+            entry.query = tmps[1];
+        }
+        entry.name = tmps[0];
+        
+        for (String name : colmuns) {
+            name = name.trim();
+            FieldEntry fe = columnName2FieldEntry.get(name);
+            if (fe != null) {
+                entry.columns.add(fe);
+            } else {
+                Messager messager = env.getMessager();
+                messager.printMessage(Kind.ERROR, "Field '" + name + "' in query is not found.",
+                        element);
+            }
+        }
+        return entry;
     }
 
     FieldEntry createFieldEntry(DataModel annotation, VariableElement ve,
@@ -572,4 +625,45 @@ class DataModelProcessor {
             return name.substring(0, 1).toLowerCase() + name.substring(1);
         }
     }
+    private static List<String> pickUpColumns(String sql) {
+        String isql = sql.toLowerCase(Locale.ROOT);
+        int headPos = isql.indexOf("select");
+        int tailPos = isql.length();
+        {
+            int p;
+            p = isql.indexOf("from");
+            tailPos = (p >= 0) ? Math.min(tailPos, p): tailPos;
+            p = isql.indexOf("where");
+            tailPos = (p >= 0) ? Math.min(tailPos, p): tailPos;
+            p = isql.indexOf("group");
+            tailPos = (p >= 0) ? Math.min(tailPos, p): tailPos;
+            p = isql.indexOf("where");
+            tailPos = (p >= 0) ? Math.min(tailPos, p): tailPos;
+            p = isql.indexOf("order");
+            tailPos = (p >= 0) ? Math.min(tailPos, p): tailPos;
+            p = isql.indexOf("limit");
+            tailPos = (p >= 0) ? Math.min(tailPos, p): tailPos;
+        }
+        if (headPos >= tailPos) {
+            return null;
+        }
+        String selectBlock = sql.substring(headPos + 6, tailPos).trim();
+        {
+            String[] tmp = selectBlock.split("\\s",2);
+            tmp[0] = tmp[0].toLowerCase(Locale.ROOT);
+            if (tmp.length >= 2 && (tmp[0].equals("distinct") || tmp[0].equals("all"))) {
+                selectBlock = tmp[1];
+            }
+        }
+        List<String> results = new ArrayList<String>();
+        {
+            String[] items = selectBlock.split(",");
+            for (String item : items) {
+                item = item.trim();
+                String tmps[] = item.split("\\s");
+                results.add(tmps[tmps.length-1]);
+            }
+        }
+        return results;
+    } 
 }
