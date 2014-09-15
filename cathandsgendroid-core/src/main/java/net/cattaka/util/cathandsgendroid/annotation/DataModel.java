@@ -83,6 +83,16 @@ public @interface DataModel {
     String[] unique() default {};
 
     /**
+     * Specify direct query sql. Note that column names must be same with field. e.g
+     * <ul>
+     * <li>unique={"Query1:select val1,val2 from mytable", "Query2:select max(val1) as val1, max(val2) as val2 from mytable"}</li>
+     * </ul>
+     * 
+     * @return Fields that are used for query.
+     */
+    String[] query() default {};
+
+    /**
      * Specify whether constants of column index are generated.
      * 
      * @return If true constants of column index are generated.

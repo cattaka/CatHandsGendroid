@@ -175,6 +175,30 @@ public class @{genClassName} {
     }
 @end{}@comment{@if{findEntry.unique}}
 @end{}@comment{@foreach{findEntry : findEntries}}
+@foreach{queryEntry : queryEntries}
+@code{
+    findMethodName = "findBy" + queryEntry.name;
+    cursorMethodName = "findCursorBy" + queryEntry.name;
+}
+    public static java.util.List<@{className}> @{findMethodName}(SQLiteDatabase db@foreach{arg:queryEntry.args}, String @{arg}@end{}) {
+        Cursor cursor = @{cursorMethodName}(db@foreach{arg:queryEntry.args}, @{arg}@end{});
+        java.util.List<@{className}> result = new java.util.ArrayList<@{className}>();
+        while (cursor.moveToNext()) {
+            @{className} model = new @{className}();
+@code{counter=0}@foreach{fieldEntry:queryEntry.columns}
+            model.@{fieldEntry.setter}(ACCESSOR_@{fieldEntry.compositeName}.readFromCursor(cursor,${counter++}));@end{}
+            result.add(model);
+        }
+        cursor.close();
+        return result;
+    }
+    public static Cursor ${cursorMethodName}(SQLiteDatabase db@foreach{arg:queryEntry.args}, String @{arg}@end{}) {
+        String[] selectionArgs = new String[]{
+@foreach{arg:queryEntry.args}@{arg},@end{}
+        };
+        return db.rawQuery("@{queryEntry.query}", selectionArgs);
+    }
+@end{}@comment{@foreach{queryEntry : queryEntries}}
 @end{}@comment{@if{annotation.genDbFunc()}}
 
 
