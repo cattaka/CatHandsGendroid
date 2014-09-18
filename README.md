@@ -13,6 +13,10 @@ This provide follow utility classes.
 
 [Please look at Wiki](https://github.com/cattaka/CatHandsGendroid/wiki)
 
+## Sample Application
+
+[FastCheckList](https://github.com/cattaka/FastCheckList)
+
 ## Generate DB, Parcel utility classes.
 When you have following class, it has @DataModel and @DataModelAttr annotations.
 ```java
