@@ -271,7 +271,7 @@ class DataModelProcessor {
         if (primaryKey != null) {
             map.put("primaryKey", primaryKey);
         }
-        if (annotation.genDbFunc()) {
+        if (annotation.genDbFunc() || annotation.genContentResolverFunc()) {
             String tableName = convertName(annotation.tableNamingConventions(), className);
             map.put("tableName", tableName);
         }
@@ -402,7 +402,7 @@ class DataModelProcessor {
             return null;
         }
 
-        InnerFieldType ift = createInnerFieldType(ve.asType(), attr);
+        InnerFieldType ift = createInnerFieldType(ve, ve.asType(), attr);
         if (ift != null) {
             FieldEntry fe = new FieldEntry();
             fe.origName = String.valueOf(ve.getSimpleName());
@@ -439,7 +439,7 @@ class DataModelProcessor {
         }
     }
 
-    public static InnerFieldType createInnerFieldType(TypeMirror tm, DataModelAttrs attr) {
+    public InnerFieldType createInnerFieldType(VariableElement ve, TypeMirror tm, DataModelAttrs attr) {
         InnerFieldType result = null;
 		// System.out.print(" : " + tm.getKind());
         if (attr != null && !IAccessor.class.getName().equals(pickAccessor(attr))) {
@@ -473,7 +473,7 @@ class DataModelProcessor {
             } else if (hasSuperclass((DeclaredType)tm, "java.util.List")) {
                 List<? extends TypeMirror> tas = ((DeclaredType)tm).getTypeArguments();
                 if (tas.size() > 0) {
-                    InnerFieldType ift = createInnerFieldType(tas.get(0), null);
+                    InnerFieldType ift = createInnerFieldType(ve, tas.get(0), null);
                     result = InnerFieldType.createListType(ift);
                 }
             } else if (hasSuperclass((DeclaredType)tm, "java.lang.Enum")) {
@@ -483,6 +483,9 @@ class DataModelProcessor {
                 result = InnerFieldType.createCustomType(String.valueOf(te2.getQualifiedName()),
                         SerializableAccessor.class.getName(), "TEXT");
             } else if (hasInterface((DeclaredType)tm, "android.os.Parcelable")) {
+                if (attr == null || attr.forDb()) {
+                    processingEnv.getMessager().printMessage(Kind.ERROR, "Do not use forDb to Parcelable because storing Parcelable to storage is danger in Android specification. Use serializable or use custom IAccessor.", ve);
+                }
                 result = InnerFieldType.createCustomType(String.valueOf(te2.getQualifiedName()),
                         ParcelableAccessor.class.getName(), "TEXT");
             }
@@ -491,7 +494,7 @@ class DataModelProcessor {
             if (tm2.getKind() == TypeKind.BYTE) {
                 result = InnerFieldType.BLOB;
             } else {
-                InnerFieldType ift = createInnerFieldType(tm2, null);
+                InnerFieldType ift = createInnerFieldType(ve, tm2, null);
                 result = InnerFieldType.createArrayType(ift);
             }
         } else if (tm.getKind() == TypeKind.BOOLEAN) {
