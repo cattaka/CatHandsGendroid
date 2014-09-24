@@ -271,7 +271,7 @@ class DataModelProcessor {
         if (primaryKey != null) {
             map.put("primaryKey", primaryKey);
         }
-        if (annotation.genDbFunc()) {
+        if (annotation.genDbFunc() || annotation.genContentResolverFunc()) {
             String tableName = convertName(annotation.tableNamingConventions(), className);
             map.put("tableName", tableName);
         }
