@@ -83,7 +83,7 @@ public class FullModel implements Parcelable {
 
     private short pShortValue;
 
-    @DataModelAttrs(forDb=false)
+    @DataModelAttrs(accessor=TinyParcelableCatHands.Accessor.class)
     private TinyParcelable parcelableValue;
 
     private TinySerializable serializable;

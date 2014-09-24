@@ -5,7 +5,7 @@ import net.cattaka.util.cathandsgendroid.annotation.DataModel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-@DataModel(genParcelFunc=true, genDbFunc=false)
+@DataModel(genParcelFunc=true, genDbFunc=false, genAccessor=true, genDsFunc=true)
 public class TinyParcelable implements Parcelable {
     public static final Creator<TinyParcelable> CREATOR = TinyParcelableCatHands.CREATOR;
     

@@ -334,9 +334,12 @@ public class @{genClassName} {
 @comment{ ==== Accessor ==== }
 @if{annotation.genAccessor()}
     public static class Accessor implements IAccessor<@{className}> {
-        private static Accessor INSTANCE = new Accessor();
-        public static Accessor getInstance() {
-            return INSTANCE;
+        static Accessor instance;
+        public static IAccessor<@{className}> createAccessor(Class<@{className}> clazz) {
+            if (instance == null) {
+                instance = new Accessor();
+            }
+            return instance;
         }
         @Override
         public @{className} readFromStream(java.io.DataInputStream in) throws java.io.IOException {
@@ -377,7 +380,7 @@ public class @{genClassName} {
             }
         }
         @Override
-        public @{className} readFromCursor(Cursor c, int idx) {
+        public @{className} readFromCursor(android.database.Cursor c, int idx) {
             if (c.isNull(idx)) {
                 return null;
             }
@@ -390,7 +393,7 @@ public class @{genClassName} {
             }
         }
         @Override
-        public void putToContentValues(ContentValues values, String columnName, @{className} value) {
+        public void putToContentValues(android.content.ContentValues values, String columnName, @{className} value) {
             byte[] blob = null;
             if (value != null) {
                 java.io.ByteArrayOutputStream bout = new java.io.ByteArrayOutputStream();

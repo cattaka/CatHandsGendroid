@@ -76,9 +76,7 @@ public class FullModelTest {
             assertEquals(model.getIntegerValue(), t.getIntegerValue());
             assertEquals(model.getKey(), t.getKey());
             assertEquals(model.getLongValue(), t.getLongValue());
-            // Parcelable is out of support for DB.
-            // assertEquals(model.getParcelableValue().getData(),
-            // t.getParcelableValue().getData());
+            assertEquals(model.getParcelableValue().getData(), t.getParcelableValue().getData());
             assertEquals(model.getPBooleanValue(), t.getPBooleanValue());
             assertEquals(model.getPByteValue(), t.getPByteValue());
             assertEquals(model.getPCharValue(), t.getPCharValue());
@@ -136,8 +134,7 @@ public class FullModelTest {
             model2.setFloatValue((float)67.89);
             model2.setIntegerValue(345);
             model2.setLongValue(876L);
-            // Parcelable is out of support for DB.
-            // model2.setParcelableValue(new TinyParcelable(222));
+            model2.setParcelableValue(new TinyParcelable(222));
             model2.setPBooleanValue(false);
             model2.setPByteValue((byte)14);
             model2.setPCharValue('A');
@@ -164,9 +161,7 @@ public class FullModelTest {
             assertEquals(model2.getIntegerValue(), t.getIntegerValue());
             assertEquals(model2.getKey(), t.getKey());
             assertEquals(model2.getLongValue(), t.getLongValue());
-            // Parcelable is out of support for DB.
-            // assertEquals(model2.getParcelableValue().getData(),
-            // t.getParcelableValue().getData());
+            assertEquals(model2.getParcelableValue().getData(), t.getParcelableValue().getData());
             assertEquals(model2.getPBooleanValue(), t.getPBooleanValue());
             assertEquals(model2.getPByteValue(), t.getPByteValue());
             assertEquals(model2.getPCharValue(), t.getPCharValue());
@@ -242,8 +237,7 @@ public class FullModelTest {
             model.setFloatValue((float)56.78);
             model.setIntegerValue(234);
             model.setLongValue(987L);
-            // Parcelable is out of support for DB.
-            // model.setParcelableValue(new TinyParcelable(333));
+            model.setParcelableValue(new TinyParcelable(333));
             model.setPBooleanValue(true);
             model.setPByteValue((byte)13);
             model.setPCharValue('B');
@@ -276,9 +270,7 @@ public class FullModelTest {
             assertEquals(model.getIntegerValue(), t.getIntegerValue());
             assertEquals(model.getKey(), t.getKey());
             assertEquals(model.getLongValue(), t.getLongValue());
-            // Parcelable is out of support for DB.
-            // assertEquals(model.getParcelableValue().getData(),
-            // t.getParcelableValue().getData());
+            assertEquals(model.getParcelableValue().getData(), t.getParcelableValue().getData());
             assertEquals(model.getPBooleanValue(), t.getPBooleanValue());
             assertEquals(model.getPByteValue(), t.getPByteValue());
             assertEquals(model.getPCharValue(), t.getPCharValue());
@@ -317,8 +309,7 @@ public class FullModelTest {
             assertEquals(model.getIntegerValue(), t.getIntegerValue());
             assertEquals(model.getKey(), t.getKey());
             assertEquals(model.getLongValue(), t.getLongValue());
-            // Parcelable is out of support for DB.
-            // assertEquals(model.getParcelableValue(), t.getParcelableValue());
+            assertEquals(model.getParcelableValue(), t.getParcelableValue());
             assertEquals(model.getPBooleanValue(), t.getPBooleanValue());
             assertEquals(model.getPByteValue(), t.getPByteValue());
             assertEquals(model.getPCharValue(), t.getPCharValue());
@@ -350,8 +341,7 @@ public class FullModelTest {
             model.setFloatValue((float)56.78);
             model.setIntegerValue(234);
             model.setLongValue(987L);
-            // Parcelable is out of support for DB.
-            // model.setParcelableValue(new TinyParcelable(333));
+            model.setParcelableValue(new TinyParcelable(333));
             model.setPBooleanValue(true);
             model.setPByteValue((byte)13);
             model.setPCharValue('B');
@@ -388,9 +378,7 @@ public class FullModelTest {
             assertEquals(model.getIntegerValue(), t.getIntegerValue());
             assertEquals(model.getKey(), t.getKey());
             assertEquals(model.getLongValue(), t.getLongValue());
-            // Parcelable is out of support for DB.
-            // assertEquals(model.getParcelableValue().getData(),
-            // t.getParcelableValue().getData());
+            assertEquals(model.getParcelableValue().getData(), t.getParcelableValue().getData());
             assertEquals(model.getPBooleanValue(), t.getPBooleanValue());
             assertEquals(model.getPByteValue(), t.getPByteValue());
             assertEquals(model.getPCharValue(), t.getPCharValue());
@@ -433,8 +421,7 @@ public class FullModelTest {
             assertEquals(model.getIntegerValue(), t.getIntegerValue());
             assertEquals(model.getKey(), t.getKey());
             assertEquals(model.getLongValue(), t.getLongValue());
-            // Parcelable is out of support for DB.
-            // assertEquals(model.getParcelableValue(), t.getParcelableValue());
+            assertEquals(model.getParcelableValue(), t.getParcelableValue());
             assertEquals(model.getPBooleanValue(), t.getPBooleanValue());
             assertEquals(model.getPByteValue(), t.getPByteValue());
             assertEquals(model.getPCharValue(), t.getPCharValue());
