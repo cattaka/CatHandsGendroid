@@ -8,6 +8,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import net.cattaka.util.cathandsgendroid.accessor.IAccessor;
+
 /**
  * An annotation for DataModel.
  * 
@@ -138,7 +140,14 @@ public @interface DataModel {
     /**
      * Specify whether this is used for {@link DataOutputStream} and {@link DataInputStream}.
      * 
-     * @return If true methods for DB are generated.
+     * @return If true methods for DataInputStream and DataOutputStream are generated.
      */
     boolean genDsFunc() default false;
+
+    /**
+     * Specify whether this is used for {@link IAccessor}.
+     * 
+     * @return If trueIAccessor for this class are generated.
+     */
+    boolean genAccessor() default false;
 }

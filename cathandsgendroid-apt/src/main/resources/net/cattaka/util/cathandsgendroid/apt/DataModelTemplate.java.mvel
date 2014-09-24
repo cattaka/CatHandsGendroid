@@ -329,4 +329,85 @@ public class @{genClassName} {
         ACCESSOR_@{fieldEntry.compositeName}.writeToStream(out, src.@{fieldEntry.getter}());@end{}
     }
 @end{}
+
+
+@comment{ ==== Accessor ==== }
+@if{annotation.genAccessor()}
+    public static class Accessor implements IAccessor<@{className}> {
+        private static Accessor INSTANCE = new Accessor();
+        public static Accessor getInstance() {
+            return INSTANCE;
+        }
+        @Override
+        public @{className} readFromStream(java.io.DataInputStream in) throws java.io.IOException {
+            if (in.readBoolean()) {
+                @{className} dest = new @{className}();
+                @{className}CatHands.readFromDataInputStream(dest, in);
+                return dest;
+            } else {
+                return null;
+            }
+        }
+        @Override
+        public void writeToStream(java.io.DataOutputStream out, @{className} value) throws java.io.IOException {
+            if (value != null) {
+                out.writeBoolean(true);
+                @{className}CatHands.writeToDataOutputStream(value, out);
+            } else {
+                out.writeBoolean(false);
+            }
+        }
+        @Override
+        public @{className} readFromParcel(android.os.Parcel p) {
+            if (p.readByte() != 0) {
+                @{className} dest = new @{className}();
+                @{className}CatHands.readFromParcel(dest, p);
+                return dest;
+            } else {
+                return null;
+            }
+        }
+        @Override
+        public void writeToParcel(android.os.Parcel p, @{className} value) {
+            if (value != null) {
+                p.writeByte((byte)1);
+                @{className}CatHands.writeToParcel(value, p, 0);
+            } else {
+                p.writeByte((byte)0);
+            }
+        }
+        @Override
+        public @{className} readFromCursor(Cursor c, int idx) {
+            if (c.isNull(idx)) {
+                return null;
+            }
+            byte[] blob = c.getBlob(idx);
+            java.io.DataInputStream din = new java.io.DataInputStream(new java.io.ByteArrayInputStream(blob));
+            try {
+                return readFromStream(din);
+            } catch (java.io.IOException e) {
+                return null;
+            }
+        }
+        @Override
+        public void putToContentValues(ContentValues values, String columnName, @{className} value) {
+            byte[] blob = null;
+            if (value != null) {
+                java.io.ByteArrayOutputStream bout = new java.io.ByteArrayOutputStream();
+                java.io.DataOutputStream dout = new java.io.DataOutputStream(bout);
+                try {
+                    writeToStream(dout, value);
+                    dout.flush();
+                    blob = bout.toByteArray();
+                } catch (java.io.IOException e) {
+                }
+            }
+            values.put(columnName, blob);
+        }
+        @Override
+        public String stringValue(@{className} value) {
+            return (value != null) ? value.toString() : null;
+        }
+    }
+@end{}@comment{annotation.genAccessor()}
 }

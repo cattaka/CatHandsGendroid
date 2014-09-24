@@ -20,7 +20,7 @@ import android.os.Parcelable;
         "shortValue", "stringValue", "tinyEnum"
 },
 query="MyQuery:select blobValue, booleanValue, byteValue from FullModel where key=?",
-genDbFunc = true, genParcelFunc = true, genContentResolverFunc = true, genDsFunc = true, autoincrement = true)
+genDbFunc = true, genParcelFunc = true, genContentResolverFunc = true, genDsFunc = true, autoincrement = true, genAccessor=true)
 public class FullModel implements Parcelable {
     @Override
     public int describeContents() {
