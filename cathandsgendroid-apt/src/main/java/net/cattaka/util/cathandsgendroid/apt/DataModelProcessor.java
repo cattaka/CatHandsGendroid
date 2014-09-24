@@ -169,6 +169,11 @@ class DataModelProcessor {
     	            }
     	        }
 	        }
+	        if (annotation.genAccessor()) {
+	            if (!annotation.genParcelFunc() || !annotation.genDsFunc()) {
+	                processingEnv.getMessager().printMessage(Kind.ERROR, "If genAccessor=true, it requires genParcelFunc=true and genDsFunc=true.", element);
+	            }
+	        }
 	    }
 
         List<FindEntriesPerVersion> findEntriesPerVersions = new ArrayList<DataModelProcessor.FindEntriesPerVersion>();
@@ -449,6 +454,7 @@ class DataModelProcessor {
             		dbDataType);
         } else if (tm.getKind() == TypeKind.DECLARED) {
             TypeElement te2 = (TypeElement)((DeclaredType)tm).asElement();
+            DataModel typeDataModel = ((DeclaredType)tm).asElement().getAnnotation(DataModel.class);
             //System.out.print(" : " + te2.getQualifiedName());
             if (te2.getQualifiedName().contentEquals(Boolean.class.getCanonicalName())) {
                 result = InnerFieldType.BOOLEAN;
@@ -479,12 +485,17 @@ class DataModelProcessor {
             } else if (hasSuperclass((DeclaredType)tm, "java.lang.Enum")) {
                 result = InnerFieldType.createCustomType(String.valueOf(te2.getQualifiedName()),
                         EnumNameAccessor.class.getName(), "TEXT");
+            } else if (typeDataModel != null && typeDataModel.genAccessor()) {
+                String accessorName = String.valueOf(tm) + "CatHands.Accessor";
+                String dbDataType = pickDbDataType(accessorName);
+                result = InnerFieldType.createCustomType(String.valueOf(tm), accessorName,
+                        dbDataType);
             } else if (hasInterface((DeclaredType)tm, "java.io.Serializable")) {
                 result = InnerFieldType.createCustomType(String.valueOf(te2.getQualifiedName()),
                         SerializableAccessor.class.getName(), "TEXT");
             } else if (hasInterface((DeclaredType)tm, "android.os.Parcelable")) {
                 if (attr == null || attr.forDb()) {
-                    processingEnv.getMessager().printMessage(Kind.ERROR, "Do not use forDb to Parcelable because storing Parcelable to storage is danger in Android specification. Use serializable or use custom IAccessor.", ve);
+                    processingEnv.getMessager().printMessage(Kind.ERROR, "Do not use forDb to Parcelable because storing Parcelable to storage is danger in Android specification. Add @DataModel(genAccessor=true) to target class, or use serializable or use custom IAccessor.", ve);
                 }
                 result = InnerFieldType.createCustomType(String.valueOf(te2.getQualifiedName()),
                         ParcelableAccessor.class.getName(), "TEXT");
