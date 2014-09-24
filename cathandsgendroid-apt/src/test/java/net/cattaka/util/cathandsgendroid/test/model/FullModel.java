@@ -4,10 +4,8 @@ package net.cattaka.util.cathandsgendroid.test.model;
 import java.util.Date;
 
 import net.cattaka.util.cathandsgendroid.accessor.EnumOrderAccessor;
-import net.cattaka.util.cathandsgendroid.accessor.ParcelableAccessor;
 import net.cattaka.util.cathandsgendroid.annotation.DataModel;
 import net.cattaka.util.cathandsgendroid.annotation.DataModelAttrs;
-import net.cattaka.util.cathandsgendroid.test.model.FullModelCatHands.Accessor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
