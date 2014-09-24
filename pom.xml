@@ -3,7 +3,7 @@
 
 	<groupId>net.cattaka</groupId>
 	<artifactId>cathandsgendroid</artifactId>
-	<version>0.3.2-SNAPSHOT</version>
+	<version>0.3.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>${project.groupId}:${project.artifactId}</name>
