@@ -122,6 +122,10 @@ public class FullModelTest {
                     .size());
             assertEquals(1, FullModelCatHands.findByTinyEnum(db, 0, model.getTinyEnum()).size());
         }
+        { // Query
+            assertEquals(1, FullModelCatHands.query(db, 0, "stringValue=?", new String[] {model.getStringValue()}, null).size());
+            assertEquals(1, FullModelCatHands.query(db, 0, "tinyEnum=?", new String[] {model.getTinyEnum().name()}, null).size());
+        }
         FullModel model2 = new FullModel();
         { // Update
             model2.setKey(model.getKey());

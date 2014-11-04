@@ -113,7 +113,16 @@ public class @{genClassName} {
         String[] whereArgs = new String[]{ACCESSOR_@{?primaryKey.compositeName}.stringValue(key)};
         return db.delete(TABLE_NAME, whereClause, whereArgs);
     }
-
+    public static java.util.List<@{className}> query(SQLiteDatabase db, int limit, String selection, String[] selectionArgs, String orderBy) {
+        String limitStr = (limit > 0) ? String.valueOf(limit) : null;
+        Cursor cursor = db.query(TABLE_NAME, COLUMNS_ARRAY, selection, selectionArgs, null, null, orderBy, limitStr);
+        java.util.List<@{className}> result = new java.util.ArrayList<@{className}>();
+        while (cursor.moveToNext()) {
+            result.add(readCursorByIndex(cursor));
+        }
+        cursor.close();
+        return result;
+    }
 @foreach{findEntry : findEntries}
 @code{
     counter=0;
