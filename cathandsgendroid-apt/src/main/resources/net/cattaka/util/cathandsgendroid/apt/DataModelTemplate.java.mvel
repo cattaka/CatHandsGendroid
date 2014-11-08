@@ -116,9 +116,20 @@ public class @{genClassName} {
     public static java.util.List<@{className}> query(SQLiteDatabase db, int limit, String selection, String[] selectionArgs, String orderBy) {
         String limitStr = (limit > 0) ? String.valueOf(limit) : null;
         Cursor cursor = db.query(TABLE_NAME, COLUMNS_ARRAY, selection, selectionArgs, null, null, orderBy, limitStr);
+        return readModelsByIndex(cursor);
+    }
+    public static java.util.List<@{className}> readModelsByIndex(Cursor cursor) {
         java.util.List<@{className}> result = new java.util.ArrayList<@{className}>();
         while (cursor.moveToNext()) {
             result.add(readCursorByIndex(cursor));
+        }
+        cursor.close();
+        return result;
+    }
+    public static java.util.List<@{className}> readModelsByName(Cursor cursor) {
+        java.util.List<@{className}> result = new java.util.ArrayList<@{className}>();
+        while (cursor.moveToNext()) {
+            result.add(readCursorByName(cursor));
         }
         cursor.close();
         return result;
@@ -163,12 +174,7 @@ public class @{genClassName} {
 @else{}
     public static java.util.List<@{className}> @{findMethodName}(SQLiteDatabase db, int limit@foreach{column:findEntry.columns}, @{column.javaDataType} @{column.origName}@end{}) {
         Cursor cursor = @{cursorMethodName}(db, limit@foreach{column:findEntry.columns}, @{column.origName}@end{});
-        java.util.List<@{className}> result = new java.util.ArrayList<@{className}>();
-        while (cursor.moveToNext()) {
-            result.add(readCursorByIndex(cursor));
-        }
-        cursor.close();
-        return result;
+        return readModelsByIndex(cursor);
     }
     public static Cursor ${cursorMethodName}(SQLiteDatabase db, int limit@foreach{column:findEntry.columns}, @{column.javaDataType} @{column.origName}@end{}) {
         String selection = "@code{counter=0}@foreach{column:findEntry.columns}@{counter++>0?" AND ":""}@{column.columnName}=?@end{}";
@@ -273,12 +279,7 @@ public class @{genClassName} {
 @else{}
     public static java.util.List<@{className}> @{findMethodName}(ContentResolver resolver, Uri uri@foreach{column:findEntry.columns}, @{column.javaDataType} @{column.origName}@end{}) {
         Cursor cursor = @{cursorMethodName}(resolver,uri@foreach{column:findEntry.columns}, @{column.origName}@end{});
-        java.util.List<@{className}> result = new java.util.ArrayList<@{className}>();
-        while (cursor.moveToNext()) {
-            result.add(readCursorByIndex(cursor));
-        }
-        cursor.close();
-        return result;
+        return readModelsByIndex(cursor);
     }
     public static Cursor ${cursorMethodName}(ContentResolver resolver, Uri uri@foreach{column:findEntry.columns}, @{column.javaDataType} @{column.origName}@end{}) {
         String selection = "@code{counter=0}@foreach{column:findEntry.columns}@{counter++>0?" AND ":""}@{column.columnName}=?@end{}";
