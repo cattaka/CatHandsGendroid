@@ -122,6 +122,10 @@ public class FullModelTest {
                     .size());
             assertEquals(1, FullModelCatHands.findByTinyEnum(db, 0, model.getTinyEnum()).size());
         }
+        { // Query
+            assertEquals(1, FullModelCatHands.query(db, 0, "stringValue=?", new String[] {model.getStringValue()}, null).size());
+            assertEquals(1, FullModelCatHands.query(db, 0, "tinyEnum=?", new String[] {model.getTinyEnum().name()}, null).size());
+        }
         FullModel model2 = new FullModel();
         { // Update
             model2.setKey(model.getKey());
@@ -242,8 +246,7 @@ public class FullModelTest {
             model.setFloatValue((float)56.78);
             model.setIntegerValue(234);
             model.setLongValue(987L);
-            // Parcelable is out of support for DB.
-            // model.setParcelableValue(new TinyParcelable(333));
+            model.setParcelableValue(new TinyParcelable(333));
             model.setPBooleanValue(true);
             model.setPByteValue((byte)13);
             model.setPCharValue('B');
@@ -276,9 +279,7 @@ public class FullModelTest {
             assertEquals(model.getIntegerValue(), t.getIntegerValue());
             assertEquals(model.getKey(), t.getKey());
             assertEquals(model.getLongValue(), t.getLongValue());
-            // Parcelable is out of support for DB.
-            // assertEquals(model.getParcelableValue().getData(),
-            // t.getParcelableValue().getData());
+            assertEquals(model.getParcelableValue().getData(), t.getParcelableValue().getData());
             assertEquals(model.getPBooleanValue(), t.getPBooleanValue());
             assertEquals(model.getPByteValue(), t.getPByteValue());
             assertEquals(model.getPCharValue(), t.getPCharValue());
