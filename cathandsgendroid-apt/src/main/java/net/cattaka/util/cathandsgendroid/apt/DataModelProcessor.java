@@ -403,6 +403,11 @@ class DataModelProcessor {
         }
 
         InnerFieldType ift = createInnerFieldType(ve, ve.asType(), attr);
+        if (ift == InnerFieldType.PARCELABLE) {
+            if (attr == null || attr.forDb()) {
+                processingEnv.getMessager().printMessage(Kind.ERROR, "Do not use forDb to Parcelable because storing Parcelable to storage is danger in Android specification. Use serializable or use custom IAccessor.", ve);
+            }
+        }
         if (ift != null) {
             FieldEntry fe = new FieldEntry();
             fe.origName = String.valueOf(ve.getSimpleName());
@@ -483,9 +488,6 @@ class DataModelProcessor {
                 result = InnerFieldType.createCustomType(String.valueOf(te2.getQualifiedName()),
                         SerializableAccessor.class.getName(), "TEXT");
             } else if (hasInterface((DeclaredType)tm, "android.os.Parcelable")) {
-                if (attr == null || attr.forDb()) {
-                    processingEnv.getMessager().printMessage(Kind.ERROR, "Do not use forDb to Parcelable because storing Parcelable to storage is danger in Android specification. Use serializable or use custom IAccessor.", ve);
-                }
                 result = InnerFieldType.createCustomType(String.valueOf(te2.getQualifiedName()),
                         ParcelableAccessor.class.getName(), "TEXT");
             }
