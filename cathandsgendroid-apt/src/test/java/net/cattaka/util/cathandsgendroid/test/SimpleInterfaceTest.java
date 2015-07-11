@@ -1,5 +1,8 @@
 package net.cattaka.util.cathandsgendroid.test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.cattaka.util.cathandsgendroid.test.asyncif.SimpleInterface;
 import net.cattaka.util.cathandsgendroid.test.asyncif.SimpleInterfaceAsync;
 
@@ -33,6 +36,11 @@ public class SimpleInterfaceTest {
 			addResult = a + b;
 			return addResult;
 		}
+
+        @Override
+        public List<Integer> runLists(List<Integer> args) {
+            return Arrays.asList(1,2,3);
+        }
 	}
 
 	private Handler mHandler;

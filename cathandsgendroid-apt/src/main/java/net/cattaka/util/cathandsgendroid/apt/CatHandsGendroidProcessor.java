@@ -12,6 +12,8 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 
+import org.mvel2.optimizers.OptimizerFactory;
+
 import net.cattaka.util.cathandsgendroid.annotation.AsyncInterface;
 import net.cattaka.util.cathandsgendroid.annotation.DataModel;
 
@@ -30,6 +32,8 @@ public class CatHandsGendroidProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> elements, RoundEnvironment roundEnv) {
+        OptimizerFactory.setDefaultOptimizer(OptimizerFactory.SAFE_REFLECTIVE);
+
         DataModelProcessor processor = new DataModelProcessor(processingEnv);
         for (Element element : roundEnv.getElementsAnnotatedWith(DataModel.class)) {
             processor.process((TypeElement)element, roundEnv);

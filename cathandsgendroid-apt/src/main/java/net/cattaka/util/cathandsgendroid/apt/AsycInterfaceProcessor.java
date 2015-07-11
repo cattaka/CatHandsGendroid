@@ -41,17 +41,17 @@ import net.cattaka.util.cathandsgendroid.annotation.AsyncInterface;
 import net.cattaka.util.cathandsgendroid.annotation.AsyncInterfaceAttrs;
 import net.cattaka.util.cathandsgendroid.apt.util.ResourceUtil;
 
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
+@SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedAnnotationTypes("net.cattaka.util.genasyncif.*")
 public class AsycInterfaceProcessor {
-	public static class ArgType {
-		public String typeName;
+    public static class ArgType {
+        public String typeName;
 
-		public String innerTypeName;
+        public String innerTypeName;
 
-		public String hiddenTypeName;
+        public String hiddenTypeName;
 
-		public boolean isGenerics;
+        public boolean isGenerics;
 
         private ArgType(String typeName, String innerTypeName) {
             super();
@@ -131,19 +131,19 @@ public class AsycInterfaceProcessor {
     }
 
     public static class MethodInfo {
-    	public boolean needSync;
+        public boolean needSync;
 
-    	public String methodName;
+        public String methodName;
 
-    	public String genericsDeclare;
+        public String genericsDeclare;
 
-    	public String eventName;
+        public String eventName;
 
-    	public List<ArgType> argTypes;
+        public List<ArgType> argTypes;
 
-    	public List<String> throwsList;
+        public List<String> throwsList;
 
-    	public ArgType returnType;
+        public ArgType returnType;
 
         public MethodInfo(boolean needSync, String methodName, String genericsDeclare,
                 String eventName, List<ArgType> argTypes, List<String> throwsList,
@@ -197,8 +197,8 @@ public class AsycInterfaceProcessor {
 
     }
 
-    
     private ProcessingEnvironment processingEnv;
+
     private String mTemplate;
 
     public AsycInterfaceProcessor(ProcessingEnvironment processingEnv) {
@@ -250,7 +250,8 @@ public class AsycInterfaceProcessor {
             }
             importClasses.add(info.packageName + "." + info.interfaceName);
             if (useAsyncInterfaceException) {
-            	importClasses.add("net.cattaka.util.cathandsgendroid.exception.AsyncInterfaceException");
+                importClasses
+                        .add("net.cattaka.util.cathandsgendroid.exception.AsyncInterfaceException");
             }
         }
         {
@@ -491,23 +492,24 @@ public class AsycInterfaceProcessor {
 
     private static String createHiddenGenericsDeclare(int n) {
         StringBuilder sb = new StringBuilder();
-        sb.append('<');
-        for (int i = 0; i < n; i++) {
-            if (i > 0) {
-                sb.append(',');
-            }
-            sb.append('?');
-        }
-        sb.append('>');
+//        sb.append('<');
+//        for (int i = 0; i < n; i++) {
+//            if (i > 0) {
+//                sb.append(',');
+//            }
+//            sb.append('?');
+//        }
+//        sb.append('>');
         return sb.toString();
     }
 
     private static String pickQualifiedName(TypeMirror src) {
-    	if (src.getKind() == TypeKind.DECLARED) {
-    		return String.valueOf(((TypeElement)((DeclaredType)src).asElement()).getQualifiedName());
+        if (src.getKind() == TypeKind.DECLARED) {
+            return String
+                    .valueOf(((TypeElement)((DeclaredType)src).asElement()).getQualifiedName());
         } else if (src.getKind() == TypeKind.ARRAY) {
             return pickQualifiedName(((ArrayType)src).getComponentType()) + "[]";
-    	} else if (src instanceof PrimitiveType) {
+        } else if (src instanceof PrimitiveType) {
             return ((PrimitiveType)src).getKind().name().toLowerCase();
         }
         return null;

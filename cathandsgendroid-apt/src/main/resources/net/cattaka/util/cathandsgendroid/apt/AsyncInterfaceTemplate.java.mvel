@@ -30,6 +30,7 @@ ${suppressWarnings}
                     ${asyncClassName} me = (${asyncClassName}) work[0];@end{}
                     ${interfaceName} orig = (${interfaceName}) work[1];
 @code{count=0}@foreach{arg:mi.argTypes}
+                    @if{arg.isGenerics}@SuppressWarnings("rawtypes")@end{}
                     ${arg.hiddenTypeName} arg${count} = (${arg.hiddenTypeName}) (work[${count}+2]);@code{count++}@end{}
 @if{!mi.needSync}
                     orig.${mi.methodName}(@code{count=0}@foreach{arg:mi.argTypes}@if{count > 0} ,@end{}arg@{count++}@end{});
