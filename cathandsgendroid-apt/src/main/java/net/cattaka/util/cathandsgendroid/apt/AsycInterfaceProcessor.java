@@ -20,6 +20,7 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -215,6 +216,7 @@ public class AsycInterfaceProcessor {
     }
 
     public void process(TypeElement element, RoundEnvironment roundEnv) {
+        boolean isInterface = (element.getKind() == ElementKind.INTERFACE);
         AsyncInterface gai = element.getAnnotation(AsyncInterface.class);
         List<? extends TypeParameterElement> typeParameters = element.getTypeParameters();
         String fullGenerics = "";
@@ -298,6 +300,8 @@ public class AsycInterfaceProcessor {
         }
 
         Map<String, Object> map = new HashMap<String, Object>();
+        map.put("isInterface", isInterface);
+        map.put("interfaces", element.getInterfaces());
         map.put("annotation", gai);
         map.put("importClasses", importClasses);
         map.put("methodInfos", methodInfos);

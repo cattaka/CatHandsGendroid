@@ -10,7 +10,10 @@ import android.os.Handler.Callback;
 @foreach{importClass:importClasses}
 import @{importClass};@end{}
 
-public class ${asyncClassName}${fullGenerics} implements ${interfaceName}${shortGenerics} {
+public class ${asyncClassName}${fullGenerics}
+@if{isInterface}implements ${interfaceName}${shortGenerics}
+@elseif{interfaces.size()>0}implements @code{count=0}@foreach{itf:interfaces}@if{count > 0}, @end{}${itf}@code{count++}@end{}
+@end{}{
     private static final int WORK_SIZE = ${workSize};
     private static final int POOL_SIZE = ${poolSize};
     private static final int EVENT_START = 1;
@@ -80,7 +83,7 @@ ${suppressWarnings}
 
 
 @foreach{mi:methodInfos}
-    @Override
+    @if{isInterface || interfaces.size() > 0}@Override @end{}
     public @{mi.genericsDeclare} ${mi.returnType.typeName} ${mi.methodName}(@comment{
 }@code{count=0}@foreach{arg:mi.argTypes}@if{count>0}, @end{}@{arg.typeName} arg${count++}@end{}) 
 @if{mi.throwsList.size() > 0}
