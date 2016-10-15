@@ -119,7 +119,7 @@ public @interface DataModel {
      * 
      * @return If true methods for DB are generated.
      */
-    boolean genDbFunc() default true;
+    boolean genDbFunc() default false;
 
     /**
      * Specify whether this is used for ParcelFunc.
