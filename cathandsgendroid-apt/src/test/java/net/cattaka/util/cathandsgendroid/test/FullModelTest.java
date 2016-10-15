@@ -12,6 +12,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.cattaka.util.cathandsgendroid.test.model.FullModel;
 import net.cattaka.util.cathandsgendroid.test.model.FullModel.TinyEnum;
@@ -62,6 +64,7 @@ public class FullModelTest {
             model.setShortValue((short)243);
             model.setStringValue("This is it");
             model.setTinyEnum(TinyEnum.A);
+            model.setSetSetStringValue(generateTestData(4, 3));
             FullModelCatHands.insert(db, model);
         }
         {// compare
@@ -91,6 +94,7 @@ public class FullModelTest {
             assertEquals(model.getShortValue(), t.getShortValue());
             assertEquals(model.getStringValue(), t.getStringValue());
             assertEquals(model.getTinyEnum(), t.getTinyEnum());
+            assertEquals(model.getSetSetStringValue(), t.getSetSetStringValue());
         }
         {
             assertEquals(1, FullModelCatHands.findByBooleanValue(db, 0, model.getBooleanValue())
@@ -183,6 +187,7 @@ public class FullModelTest {
             assertEquals(model2.getShortValue(), t.getShortValue());
             assertEquals(model2.getStringValue(), t.getStringValue());
             assertEquals(model2.getTinyEnum(), t.getTinyEnum());
+            assertEquals(model2.getSetSetStringValue(), t.getSetSetStringValue());
         }
         { // delete
             assertEquals(1, FullModelCatHands.delete(db, model.getKey()));
@@ -227,6 +232,7 @@ public class FullModelTest {
             assertEquals(model.getShortValue(), t.getShortValue());
             assertEquals(model.getStringValue(), t.getStringValue());
             assertEquals(model.getTinyEnum(), t.getTinyEnum());
+            assertEquals(model.getSetSetStringValue(), t.getSetSetStringValue());
         }
     }
 
@@ -259,6 +265,7 @@ public class FullModelTest {
             model.setShortValue((short)243);
             model.setStringValue("This is it");
             model.setTinyEnum(TinyEnum.A);
+            model.setSetSetStringValue(generateTestData(4, 3));
         }
 
         Parcel parcel;
@@ -292,6 +299,7 @@ public class FullModelTest {
             assertEquals(model.getShortValue(), t.getShortValue());
             assertEquals(model.getStringValue(), t.getStringValue());
             assertEquals(model.getTinyEnum(), t.getTinyEnum());
+            assertEquals(model.getSetSetStringValue(), t.getSetSetStringValue());
         }
     }
 
@@ -332,6 +340,7 @@ public class FullModelTest {
             assertEquals(model.getShortValue(), t.getShortValue());
             assertEquals(model.getStringValue(), t.getStringValue());
             assertEquals(model.getTinyEnum(), t.getTinyEnum());
+            assertEquals(model.getSetSetStringValue(), t.getSetSetStringValue());
         }
     }
 
@@ -365,6 +374,7 @@ public class FullModelTest {
             model.setShortValue((short)243);
             model.setStringValue("This is it");
             model.setTinyEnum(TinyEnum.A);
+            model.setSetSetStringValue(generateTestData(4, 3));
         }
 
         byte[] data;
@@ -404,6 +414,7 @@ public class FullModelTest {
             assertEquals(model.getShortValue(), t.getShortValue());
             assertEquals(model.getStringValue(), t.getStringValue());
             assertEquals(model.getTinyEnum(), t.getTinyEnum());
+            assertEquals(model.getSetSetStringValue(), t.getSetSetStringValue());
             assertEquals(-1, din.read());
         }
     }
@@ -448,6 +459,7 @@ public class FullModelTest {
             assertEquals(model.getShortValue(), t.getShortValue());
             assertEquals(model.getStringValue(), t.getStringValue());
             assertEquals(model.getTinyEnum(), t.getTinyEnum());
+            assertEquals(model.getSetSetStringValue(), t.getSetSetStringValue());
         }
     }
 
@@ -477,5 +489,18 @@ public class FullModelTest {
                 // ok
             }
         }
+    }
+    
+    private Set<Set<String>> generateTestData(int m, int n) {
+        int c = 0;
+        Set<Set<String>> ss = new HashSet<Set<String>>();
+        for (int i=0;i<m;i++) {
+            Set<String> s = new HashSet<String>();
+            for (int j=0;j<n;j++) {
+                s.add(String.valueOf(c++));
+            }
+            ss.add(s);
+        }
+        return ss;
     }
 }

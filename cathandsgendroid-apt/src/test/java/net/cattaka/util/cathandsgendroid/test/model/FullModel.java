@@ -2,6 +2,7 @@
 package net.cattaka.util.cathandsgendroid.test.model;
 
 import java.util.Date;
+import java.util.Set;
 
 import net.cattaka.util.cathandsgendroid.accessor.EnumOrderAccessor;
 import net.cattaka.util.cathandsgendroid.annotation.DataModel;
@@ -91,6 +92,9 @@ public class FullModel implements Parcelable {
     private Short shortValue;
 
     private String stringValue;
+
+    @DataModelAttrs(accessor = SetSetStringAccessor.class)
+    private Set<Set<String>> setSetStringValue;
 
     public byte[] getBlobValue() {
         return blobValue;
@@ -283,5 +287,13 @@ public class FullModel implements Parcelable {
     public void setKey(long key) {
         this.key = key;
     }
+
+	public Set<Set<String>> getSetSetStringValue() {
+		return setSetStringValue;
+	}
+
+	public void setSetSetStringValue(Set<Set<String>> setSetStringValue) {
+		this.setSetStringValue = setSetStringValue;
+	}
 
 }
