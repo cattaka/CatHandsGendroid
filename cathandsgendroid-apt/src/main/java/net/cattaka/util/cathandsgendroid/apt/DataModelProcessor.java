@@ -450,8 +450,7 @@ class DataModelProcessor {
         if (attr != null && !IAccessor.class.getName().equals(pickAccessor(attr))) {
         	String accessorName = pickAccessor(attr);
         	String dbDataType = pickDbDataType(accessorName);
-            result = InnerFieldType.createCustomType(String.valueOf(tm), accessorName,
-            		dbDataType);
+            result = InnerFieldType.createCustomType(tm, accessorName,	dbDataType);
         } else if (tm.getKind() == TypeKind.DECLARED) {
             TypeElement te2 = (TypeElement)((DeclaredType)tm).asElement();
             //System.out.print(" : " + te2.getQualifiedName());
@@ -482,13 +481,13 @@ class DataModelProcessor {
                     result = InnerFieldType.createListType(ift);
                 }
             } else if (hasSuperclass((DeclaredType)tm, "java.lang.Enum")) {
-                result = InnerFieldType.createCustomType(String.valueOf(te2.getQualifiedName()),
+                result = InnerFieldType.createCustomType(tm,
                         EnumNameAccessor.class.getName(), "TEXT");
             } else if (hasInterface((DeclaredType)tm, "java.io.Serializable")) {
-                result = InnerFieldType.createCustomType(String.valueOf(te2.getQualifiedName()),
+                result = InnerFieldType.createCustomType(tm,
                         SerializableAccessor.class.getName(), "TEXT");
             } else if (hasInterface((DeclaredType)tm, "android.os.Parcelable")) {
-                result = InnerFieldType.createCustomType(String.valueOf(te2.getQualifiedName()),
+                result = InnerFieldType.createCustomType(tm,
                         ParcelableAccessor.class.getName(), "TEXT");
             }
         } else if (tm.getKind() == TypeKind.ARRAY) {

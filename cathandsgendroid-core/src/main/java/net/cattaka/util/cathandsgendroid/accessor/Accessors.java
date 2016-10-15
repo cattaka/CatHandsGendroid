@@ -12,7 +12,9 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -1209,6 +1211,105 @@ public class Accessors {
         };
     }
 
+    /**
+     * Create the accessor for {@link Set}.
+     * 
+     * @param child accessor for inherited datatype. 
+     * @return created accessor
+     */
+    public static <T> IAccessor<Set<T>> createSetAccessor(final IAccessor<T> child) {
+        return new IAccessor<Set<T>>() {
+            @Override
+            public Set<T> readFromStream(DataInputStream in) throws IOException {
+                int n = in.readInt();
+                if (n >= 0) {
+                    Set<T> set = new HashSet<T>();
+                    for (int i = 0; i < n; i++) {
+                        set.add(child.readFromStream(in));
+                    }
+                    return set;
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            public void writeToStream(DataOutputStream out, Set<T> value) throws IOException {
+                if (value != null) {
+                    out.writeInt(value.size());
+                    for (T v : value) {
+                        child.writeToStream(out, v);
+                    }
+                } else {
+                    out.writeInt(-1);
+                }
+            }
+
+            @Override
+            public Set<T> readFromParcel(Parcel p) {
+                int n = p.readInt();
+                if (n >= 0) {
+                    Set<T> set = new HashSet<T>();
+                    for (int i = 0; i < n; i++) {
+                        set.add(child.readFromParcel(p));
+                    }
+                    return set;
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            public void writeToParcel(Parcel p, Set<T> value) {
+                if (value != null) {
+                    p.writeInt(value.size());
+                    for (T v : value) {
+                        child.writeToParcel(p, v);
+                    }
+                } else {
+                    p.writeInt(-1);
+                }
+            }
+
+            @Override
+            public Set<T> readFromCursor(Cursor c, int idx) {
+                byte[] bs = BlobAccessor.createAccessor(byte[].class).readFromCursor(c, idx);
+                if (bs != null) {
+                    try {
+                        DataInputStream din = new DataInputStream(new ByteArrayInputStream(bs));
+                        return readFromStream(din);
+                    } catch (IOException e) {
+                        return null;
+                    }
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            public void putToContentValues(ContentValues values, String columnName, Set<T> value) {
+                byte[] bs = null;
+                if (value != null) {
+                    try {
+                        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                        DataOutputStream dout = new DataOutputStream(bout);
+                        writeToStream(dout, value);
+                        dout.flush();
+                        bs = bout.toByteArray();
+                    } catch (IOException e) {
+                        // ignore
+                    }
+                }
+                values.put(columnName, bs);
+            }
+
+            @Override
+            public String stringValue(Set<T> value) {
+                return value != null ? String.valueOf(value) : null;
+            }
+        };
+    }
+    
     /**
      * Create the accessor for array.
      * 
