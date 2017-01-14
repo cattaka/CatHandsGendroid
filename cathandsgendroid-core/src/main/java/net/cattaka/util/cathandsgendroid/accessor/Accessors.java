@@ -726,7 +726,7 @@ public class Accessors {
 
         @Override
         public void writeToParcel(Parcel p, Double value) {
-            p.writeByte(p != null ? (byte)1 : 0);
+            p.writeByte(value != null ? (byte)1 : 0);
             if (value != null) {
                 p.writeDouble(value);
             }
