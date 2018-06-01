@@ -1,5 +1,8 @@
 .DS_Store
 
+.idea/
+*.iml
+
 **/bin/
 **/.apt_generated/
 **/gen/
