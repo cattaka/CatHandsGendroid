@@ -103,6 +103,12 @@
 			<version>3.8</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.robolectric</groupId>
+			<artifactId>android-all</artifactId>
+			<version>8.1.0-robolectric-4611349</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
   <scm>

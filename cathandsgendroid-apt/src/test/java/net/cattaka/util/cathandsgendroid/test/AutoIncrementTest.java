@@ -19,7 +19,6 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.*;
 
-@Config(sdk = 8)
 @RunWith(RobolectricTestRunner.class)
 public class AutoIncrementTest {
 	@Test

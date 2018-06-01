@@ -19,7 +19,6 @@ import org.robolectric.shadow.api.Shadow;
 
 import static org.junit.Assert.*;
 
-@Config(sdk = 8)
 @RunWith(RobolectricTestRunner.class)
 public class GenericsCallbackTest {
     static class GenericsCallbackImpl implements GenericsCallback<Integer> {

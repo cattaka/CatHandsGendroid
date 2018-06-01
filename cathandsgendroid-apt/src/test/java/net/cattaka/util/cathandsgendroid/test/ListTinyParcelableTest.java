@@ -18,7 +18,6 @@ import android.os.Parcel;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadow.api.Shadow;
 
-@Config(sdk = 8)
 @RunWith(RobolectricTestRunner.class)
 public class ListTinyParcelableTest {
 	@Test

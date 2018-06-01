@@ -15,7 +15,6 @@ import org.robolectric.RobolectricTestRunner;
 import android.database.sqlite.SQLiteDatabase;
 import org.robolectric.annotation.Config;
 
-@Config(sdk = 8)
 @RunWith(RobolectricTestRunner.class)
 public class RawQueryTest {
     @Test

@@ -32,7 +32,6 @@ import org.robolectric.shadows.ShadowParcel;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcel;
 
-@Config(sdk = 8)
 @RunWith(RobolectricTestRunner.class)
 public class FullModelTest {
     @Test

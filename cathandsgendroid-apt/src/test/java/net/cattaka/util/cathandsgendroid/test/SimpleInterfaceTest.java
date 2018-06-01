@@ -23,7 +23,6 @@ import android.os.Looper;
 
 import static org.junit.Assert.*;
 
-@Config(sdk = 8)
 @RunWith(RobolectricTestRunner.class)
 public class SimpleInterfaceTest {
 	static class SimpleInterfaceImpl implements SimpleInterface {
