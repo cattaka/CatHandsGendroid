@@ -25,7 +25,7 @@ public class AutoIncrementTest {
     public void testPint() {
         SQLiteDatabase db = SQLiteDatabase.create(null);
         db.execSQL(PintKeyAiModelCatHands.SQL_CREATE_TABLE);
-        
+
         PintKeyAiModel m1 = new PintKeyAiModel();
         PintKeyAiModel m2 = new PintKeyAiModel();
         

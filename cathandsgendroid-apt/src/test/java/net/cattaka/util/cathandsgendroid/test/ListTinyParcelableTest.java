@@ -25,11 +25,12 @@ public class ListTinyParcelableTest {
 	    ListTinyParcelable model = new ListTinyParcelable();
         Parcel parcel;
         {
-            parcel = Shadow.newInstanceOf(Parcel.class);
-            parcel.writeParcelable(model, 0);
+            parcel = Parcel.obtain();
+            model.writeToParcel(parcel,0);
+            parcel.setDataPosition(0);
         }
         {
-            ListTinyParcelable t = parcel.readParcelable(this.getClass().getClassLoader());
+            ListTinyParcelable t = ListTinyParcelable.CREATOR.createFromParcel(parcel);
             parcel.recycle();
             assertEquals(model.getTinyParcelables(), null);
         }        
@@ -44,11 +45,12 @@ public class ListTinyParcelableTest {
         }
         Parcel parcel;
         {
-            parcel = Shadow.newInstanceOf(Parcel.class);
-            parcel.writeParcelable(model, 0);
+            parcel = Parcel.obtain();
+            model.writeToParcel(parcel,0);
+            parcel.setDataPosition(0);
         }
         {
-            ListTinyParcelable t = parcel.readParcelable(this.getClass().getClassLoader());
+            ListTinyParcelable t = ListTinyParcelable.CREATOR.createFromParcel(parcel);
             parcel.recycle();
             assertEquals(model.getTinyParcelables().size(), 2);
             assertEquals(model.getTinyParcelables().get(0).getData(), 10);

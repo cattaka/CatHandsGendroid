@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowParcel;
@@ -271,11 +272,12 @@ public class FullModelTest {
 
         Parcel parcel;
         {
-            parcel = Shadow.newInstanceOf(Parcel.class);
-            parcel.writeParcelable(model, 0);
+            parcel = Parcel.obtain();
+            model.writeToParcel(parcel,0);
+            parcel.setDataPosition(0);
         }
         {
-            FullModel t = parcel.readParcelable(this.getClass().getClassLoader());
+            FullModel t = FullModel.CREATOR.createFromParcel(parcel);
             parcel.recycle();
             assertEqualsArray(model.getBlobValue(), t.getBlobValue());
             assertEquals(model.getBooleanValue(), t.getBooleanValue());
