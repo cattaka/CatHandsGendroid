@@ -22,7 +22,7 @@ import net.cattaka.util.cathandsgendroid.annotation.DataModel;
  * 
  * @author cattaka
  */
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes("net.cattaka.util.cathandsgendroid.annotation.*")
 public class CatHandsGendroidProcessor extends AbstractProcessor {
     @Override
