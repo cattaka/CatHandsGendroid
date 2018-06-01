@@ -42,7 +42,7 @@ import net.cattaka.util.cathandsgendroid.annotation.AsyncInterface;
 import net.cattaka.util.cathandsgendroid.annotation.AsyncInterfaceAttrs;
 import net.cattaka.util.cathandsgendroid.apt.util.ResourceUtil;
 
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes("net.cattaka.util.genasyncif.*")
 public class AsycInterfaceProcessor {
     public static class ArgType {
