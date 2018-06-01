@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>net.cattaka</groupId>
 		<artifactId>cathandsgendroid-parent</artifactId>
-		<version>0.5.2-SNAPSHOT</version>
+		<version>0.6.0</version>
 		<relativePath>../cathandsgendroid-parent</relativePath>
 	</parent>
 
@@ -118,6 +118,6 @@
 	</dependencies>
 
   <scm>
-    <tag>cathandsgendroid-0.1.2</tag>
+    <tag>cathandsgendroid-0.6.0</tag>
   </scm>
 </project>
