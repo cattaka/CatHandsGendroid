@@ -25,17 +25,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowParcel;
-import org.robolectric.shadows.ShadowSQLiteDatabase;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcel;
 
+@Config(sdk = 8)
 @RunWith(RobolectricTestRunner.class)
 public class FullModelTest {
     @Test
     public void testDbFunc() {
-        SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
+        SQLiteDatabase db = SQLiteDatabase.create(null);
         db.execSQL(FullModelCatHands.SQL_CREATE_TABLE);
         FullModel model = new FullModel();
         { // Insert
@@ -200,7 +202,7 @@ public class FullModelTest {
 
     @Test
     public void testDbFunc_null() {
-        SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
+        SQLiteDatabase db = SQLiteDatabase.create(null);
         db.execSQL(FullModelCatHands.SQL_CREATE_TABLE);
         FullModel model = new FullModel();
         { // Insert
@@ -270,7 +272,7 @@ public class FullModelTest {
 
         Parcel parcel;
         {
-            parcel = Robolectric.newInstanceOf(Parcel.class);
+            parcel = Shadow.newInstanceOf(Parcel.class);
             parcel.writeParcelable(model, 0);
         }
         {
@@ -309,7 +311,7 @@ public class FullModelTest {
 
         Parcel parcel;
         {
-            parcel = ShadowParcel.obtain();
+            parcel = Parcel.obtain();
             parcel.writeParcelable(model, 0);
         }
         {

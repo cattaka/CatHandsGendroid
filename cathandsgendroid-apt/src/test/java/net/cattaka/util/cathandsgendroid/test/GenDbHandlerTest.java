@@ -17,16 +17,17 @@ import net.cattaka.util.cathandsgendroid.test.model.UserModelCatHands;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.shadows.ShadowSQLiteDatabase;
 
 import android.database.sqlite.SQLiteDatabase;
+import org.robolectric.annotation.Config;
 
+@Config(sdk = 8)
 @RunWith(RobolectricTestRunner.class)
 public class GenDbHandlerTest {
 
     @Test
     public void testDml() {
-        SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
+        SQLiteDatabase db = SQLiteDatabase.create(null);
         db.execSQL(UserModelCatHands.SQL_CREATE_TABLE);
         { // Insert
             UserModel model;
@@ -103,7 +104,7 @@ public class GenDbHandlerTest {
 
     @Test
     public void testFind() {
-        SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
+        SQLiteDatabase db = SQLiteDatabase.create(null);
         db.execSQL(UserModelCatHands.SQL_CREATE_TABLE);
         UserModelCatHands.insert(db, new UserModel(null, "taro", "Taro Yamada", "A",
                 Role.PROGRAMMER, new Date(), null, Authority.ADMIN));

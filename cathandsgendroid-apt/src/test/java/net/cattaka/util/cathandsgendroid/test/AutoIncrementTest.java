@@ -13,17 +13,18 @@ import net.cattaka.util.cathandsgendroid.test.model.PlongKeyAiModelCatHands;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.shadows.ShadowSQLiteDatabase;
 
 import android.database.sqlite.SQLiteDatabase;
+import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.*;
 
+@Config(sdk = 8)
 @RunWith(RobolectricTestRunner.class)
 public class AutoIncrementTest {
 	@Test
     public void testPint() {
-        SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
+        SQLiteDatabase db = SQLiteDatabase.create(null);
         db.execSQL(PintKeyAiModelCatHands.SQL_CREATE_TABLE);
         
         PintKeyAiModel m1 = new PintKeyAiModel();
@@ -38,7 +39,7 @@ public class AutoIncrementTest {
 
 	@Test
     public void testPlong() {
-        SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
+        SQLiteDatabase db = SQLiteDatabase.create(null);
         db.execSQL(PlongKeyAiModelCatHands.SQL_CREATE_TABLE);
         
         PlongKeyAiModel m1 = new PlongKeyAiModel();
@@ -53,7 +54,7 @@ public class AutoIncrementTest {
 
 	@Test
     public void testInt() {
-        SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
+        SQLiteDatabase db = SQLiteDatabase.create(null);
         db.execSQL(IntKeyAiModelCatHands.SQL_CREATE_TABLE);
         
         IntKeyAiModel m1 = new IntKeyAiModel();
@@ -68,7 +69,7 @@ public class AutoIncrementTest {
 
 	@Test
     public void testLong() {
-        SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
+        SQLiteDatabase db = SQLiteDatabase.create(null);
         db.execSQL(LongKeyAiModelCatHands.SQL_CREATE_TABLE);
         
         LongKeyAiModel m1 = new LongKeyAiModel();

@@ -12,6 +12,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowLooper;
 
 import android.os.Handler;
@@ -20,6 +23,7 @@ import android.os.Looper;
 
 import static org.junit.Assert.*;
 
+@Config(sdk = 8)
 @RunWith(RobolectricTestRunner.class)
 public class SimpleInterfaceTest {
 	static class SimpleInterfaceImpl implements SimpleInterface {
@@ -49,11 +53,11 @@ public class SimpleInterfaceTest {
 
 	@Before
 	public void beforeTest() {
-		mHandlerThread = Robolectric.newInstanceOf(HandlerThread.class);
+		mHandlerThread = Shadow.newInstanceOf(HandlerThread.class);
 		mHandlerThread.start();
 		Looper looper = mHandlerThread.getLooper();
-		shadowLooper = Robolectric.shadowOf(looper);
-		mHandler = Robolectric.newInstance(Handler.class,
+		shadowLooper = Shadows.shadowOf(looper);
+		mHandler = Shadow.newInstance(Handler.class,
 				new Class<?>[] { Looper.class },
 				new Object[] { mHandlerThread.getLooper() });
 	}
@@ -95,14 +99,14 @@ public class SimpleInterfaceTest {
 
 			{	// Wait for scheduler
 				for (int i=0;i<100;i++) {
-					if (shadowLooper.getScheduler().enqueuedTaskCount() > 0) {
+					if (shadowLooper.getScheduler().size() > 0) {
 						break;
 					}
 					Thread.sleep(10);
 				}
 			}
 			assertNull(orig.runResult);
-			shadowLooper.getScheduler().runTasks(1);
+			shadowLooper.getScheduler().runOneTask();
 			assertEquals("run", orig.runResult);
 		}
 		{
@@ -116,14 +120,14 @@ public class SimpleInterfaceTest {
 
 			{	// Wait for scheduler
 				for (int i=0;i<100;i++) {
-					if (shadowLooper.getScheduler().enqueuedTaskCount() > 0) {
+					if (shadowLooper.getScheduler().size() > 0) {
 						break;
 					}
 					Thread.sleep(10);
 				}
 			}
 			assertNull(orig.addResult);
-			shadowLooper.getScheduler().runTasks(1);
+			shadowLooper.getScheduler().runOneTask();
 			assertEquals(Integer.valueOf(7), orig.addResult);
 		}
 	}

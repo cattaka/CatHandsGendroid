@@ -15,7 +15,10 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import android.os.Parcel;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadow.api.Shadow;
 
+@Config(sdk = 8)
 @RunWith(RobolectricTestRunner.class)
 public class ListTinyParcelableTest {
 	@Test
@@ -23,7 +26,7 @@ public class ListTinyParcelableTest {
 	    ListTinyParcelable model = new ListTinyParcelable();
         Parcel parcel;
         {
-            parcel = Robolectric.newInstanceOf(Parcel.class);
+            parcel = Shadow.newInstanceOf(Parcel.class);
             parcel.writeParcelable(model, 0);
         }
         {
@@ -42,7 +45,7 @@ public class ListTinyParcelableTest {
         }
         Parcel parcel;
         {
-            parcel = Robolectric.newInstanceOf(Parcel.class);
+            parcel = Shadow.newInstanceOf(Parcel.class);
             parcel.writeParcelable(model, 0);
         }
         {
