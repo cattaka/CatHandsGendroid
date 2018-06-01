@@ -11,15 +11,15 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.shadows.ShadowSQLiteDatabase;
 
 import android.database.sqlite.SQLiteDatabase;
+import org.robolectric.annotation.Config;
 
 @RunWith(RobolectricTestRunner.class)
 public class RawQueryTest {
     @Test
     public void testRawQuery() {
-        SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
+        SQLiteDatabase db = SQLiteDatabase.create(null);
         db.execSQL(StringKvModelCatHands.SQL_CREATE_TABLE);
         {
             StringKvModelCatHands.insert(db, new StringKvModel("key1", "apple"));

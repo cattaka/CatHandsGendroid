@@ -14,6 +14,8 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import android.os.Handler;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadow.api.Shadow;
 
 import static org.junit.Assert.*;
 
@@ -48,7 +50,7 @@ public class GenericsCallbackTest {
 
     @Before
     public void beforeTest() {
-        mHandler = Robolectric.newInstanceOf(Handler.class);
+        mHandler = Shadow.newInstanceOf(Handler.class);
     }
 
     @After

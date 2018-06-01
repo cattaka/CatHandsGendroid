@@ -6,9 +6,9 @@ import net.cattaka.util.cathandsgendroid.test.model.StringKvModelCatHands;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.shadows.ShadowSQLiteDatabase;
 
 import android.database.sqlite.SQLiteDatabase;
+import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 public class StringKvModelTest {
 	@Test
     public void testRun() {
-        SQLiteDatabase db = ShadowSQLiteDatabase.create(null);
+        SQLiteDatabase db = SQLiteDatabase.create(null);
         db.execSQL(StringKvModelCatHands.SQL_CREATE_TABLE);
 		
         StringKvModelCatHands.insert(db, new StringKvModel("Cat","Fish"));
