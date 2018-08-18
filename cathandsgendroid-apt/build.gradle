@@ -1,37 +1,8 @@
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
-apply plugin: 'com.jfrog.bintray'
-
 def projectId = "cathandsgendroid-apt"
 def description = "${project.groupId}:${projectId}"
-
-bintray {
-    user = System.env['BINTRAY_USER']
-    key = System.env['BINTRAY_APIKEY']
-
-    configurations = ['archives'] //When uploading configuration files
-
-    pkg {
-        repo = 'maven'
-        name = projectId
-        licenses = ['Apache-2.0']
-        desc = project.projectDesc
-        websiteUrl = project.siteUrl
-        issueTrackerUrl = project.issueUrl
-        vcsUrl = project.gitUrl
-        licenses = ['Apache-2.0']
-        labels = ['android']
-        publicDownloadNumbers = true
-        version {
-            name = project.artifactVersion
-            desc = project.projectDesc
-            released = toIsoDateFormat(new Date())
-            vcsTag = project.artifactVersion
-            // attributes = []
-        }
-    }
-}
 
 def toIsoDateFormat(Date date) {
     DateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
