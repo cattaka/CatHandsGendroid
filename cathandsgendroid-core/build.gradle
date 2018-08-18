@@ -1,0 +1,5 @@
+
+description = 'net.cattaka:cathandsgendroid-core'
+dependencies {
+    compileOnly group: 'com.google.android', name: 'android', version:'4.1.1.4'
+}
