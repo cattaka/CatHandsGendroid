@@ -1,7 +1,14 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
+    }
+}
+
 allprojects {
     apply plugin: 'maven'
-    group = 'net.cattaka'
-    version = '0.6.1-SNAPSHOT'
 }
 
 subprojects {
