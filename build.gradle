@@ -9,6 +9,26 @@ buildscript {
 
 allprojects {
     apply plugin: 'maven'
+    apply plugin: 'signing'
+
+    gradle.taskGraph.whenReady { taskGraph ->
+        if (taskGraph.allTasks.any { it instanceof org.gradle.plugins.signing.Sign }) {
+            def signingKeyId = System.env['SIGNING_KEYID']
+            def signingSecretKeyRingFile = System.env['SIGNING_SECRETKEYRINGFILE']
+            def signingPassword = System.env['SIGNING_PASSWORD']
+            if (!signingKeyId) throw new RuntimeException("env SIGNING_KEYID is empty")
+            if (!signingSecretKeyRingFile) throw new RuntimeException("env SIGNING_SECRETKEYRINGFILE is empty")
+            if (!signingPassword) throw new RuntimeException("env SIGNING_PASSWORD is empty")
+
+            allprojects { ext."signing.keyId" = signingKeyId }
+            allprojects { ext."signing.secretKeyRingFile" = signingSecretKeyRingFile }
+            allprojects { ext."signing.password" = signingPassword }
+        }
+    }
+
+    signing {
+        sign configurations.archives
+    }
 }
 
 subprojects {
