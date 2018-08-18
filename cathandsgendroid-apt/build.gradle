@@ -1,11 +1,10 @@
-
 description = 'net.cattaka:cathandsgendroid-apt'
 dependencies {
-    compile group: 'org.mvel', name: 'mvel2', version:'2.2.1.Final'
-  compile project(':cathandsgendroid-parent:cathandsgendroid-core')
-    testCompile group: 'junit', name: 'junit', version:'4.11'
-    testCompile group: 'org.robolectric', name: 'robolectric', version:'3.8'
-    testCompile group: 'org.robolectric', name: 'android-all', version:'8.1.0-robolectric-4611349'
-    testCompile group: 'org.mockito', name: 'mockito-core', version:'2.18.3'
-    compileOnly group: 'com.google.android', name: 'android', version:'4.1.1.4'
+    compile group: 'org.mvel', name: 'mvel2', version: '2.2.1.Final'
+    compile project(':cathandsgendroid-parent:cathandsgendroid-core')
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'org.robolectric', name: 'robolectric', version: '3.8'
+    testCompile group: 'org.robolectric', name: 'android-all', version: '8.1.0-robolectric-4611349'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
+    compileOnly group: 'com.google.android', name: 'android', version: '4.1.1.4'
 }
