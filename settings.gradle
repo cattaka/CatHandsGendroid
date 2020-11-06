@@ -1,0 +1,6 @@
+rootProject.name = 'cathandsgendroid'
+include ':cathandsgendroid-parent:cathandsgendroid-core'
+include ':cathandsgendroid-parent:cathandsgendroid-apt'
+
+project(':cathandsgendroid-parent:cathandsgendroid-core').projectDir = "$rootDir/cathandsgendroid-core" as File
+project(':cathandsgendroid-parent:cathandsgendroid-apt').projectDir = "$rootDir/cathandsgendroid-apt" as File

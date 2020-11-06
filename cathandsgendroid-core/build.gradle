@@ -1,0 +1,29 @@
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
+def projectId = "cathandsgendroid-core"
+def description = "${project.groupId}:${projectId}"
+
+def toIsoDateFormat(Date date) {
+    DateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
+    return isoFormat.format(date)
+}
+
+dependencies {
+    compileOnly group: 'com.google.android', name: 'android', version: '4.1.1.4'
+}
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}

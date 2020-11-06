@@ -1,0 +1,14 @@
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
+def projectId = "cathandsgendroid-parent"
+def description = "${project.groupId}:${projectId}"
+
+def toIsoDateFormat(Date date) {
+    DateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
+    return isoFormat.format(date)
+}
+
+artifacts {
+    archives jar
+}
